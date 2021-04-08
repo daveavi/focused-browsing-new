@@ -6,6 +6,10 @@ export default function attachContentHooks (bridge) {
   bridge.on('timeout', function (event) {
     document.getElementsByTagName('body')[0].remove()
   })
+
+  bridge.on('activateTimeOut', function (event){
+    document.body.prepend(createIframe())
+  })
 }
 
 // create iframe
@@ -21,9 +25,6 @@ function createIframe () {
   })
 
   iframe.src = chrome.runtime.getURL('www/index.html')
-
+  console.log(iframe.src)
   return iframe
 }
-
-// inject iframe
-document.body.prepend(createIframe())
