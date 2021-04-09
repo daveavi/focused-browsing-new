@@ -38,7 +38,7 @@ export default function attachBackgroundHooks (bridge /* , allActiveConnections 
   })
 
   chrome.browserAction.onClicked.addListener(() => {
-    bridge.send('activateTimeOut')
+    bridge.send('activateFocus')
   })
   /*
   // EXAMPLES

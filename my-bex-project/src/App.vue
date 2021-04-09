@@ -1,25 +1,50 @@
 <template>
-  <div id="q-app">Timeout in: {{ remainingTime }}</div>
+  <div id="q-app">
+    <!-- <onoff-toggle
+    v-model="focus"
+    onColor="#008F13"
+    :shadow="false"
+    /> -->
+    <button :click="hideFeed">{{enable}}</button>
+  </div>
 </template>
 
 <script>
+// import OnoffToggle from 'vue-onoff-toggle';
 export default {
   name: 'App',
+  // components: {
+  //   OnoffToggle
+  // },
   data() {
     return {
-      remainingTime: 60
+      focus: false,
+      enable: 'focus'
     }
   },
-  mounted() {
-    setInterval(() => {
-      if (this.remainingTime > 0) {
-        this.remainingTime--
-      } 
-      else {
-        this.$q.bex.send('timeout')
+
+  methods:{
+    hideFeed(){
+      this.$q.bex.send(this.enable)
+      this.focus = !this.focus
+      if(this.focus){
+        this.enable = 'un-focus'
+      }else{
+        this.enable = 'focus'
       }
-    }, 1000)
+
+    }
   }
+  // mounted() {
+  //   setInterval(() => {
+  //     if (this.remainingTime > 0) {
+  //       this.remainingTime--
+  //     } 
+  //     else {
+  //       this.$q.bex.send('timeout')
+  //     }
+  //   }, 1000)
+  // }
 }
 
 </script>
@@ -30,5 +55,6 @@ export default {
   margin:5px;
   padding-left: 3px;
   border:1px solid white;
+  height:100px;
 }
 </style>
