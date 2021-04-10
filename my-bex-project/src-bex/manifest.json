@@ -19,7 +19,7 @@
     "persistent": true
   },
   "content_scripts": [{
-    "matches": ["*://*.twitter.com/*"],
+    "matches": ["<all_urls>"],
     "js": [
       "www/bex-content-script.js",
       "js/content-script.js"
@@ -29,6 +29,7 @@
     ]
   }],
   "permissions": [
+    "<all_urls>",
     "storage",
     "tabs",
     "activeTab"

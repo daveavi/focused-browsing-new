@@ -1,21 +1,12 @@
 <template>
   <div id="q-app">
-    <!-- <onoff-toggle
-    v-model="focus"
-    onColor="#008F13"
-    :shadow="false"
-    /> -->
-    <button :click="hideFeed">{{enable}}</button>
+    <button v-on:click="hideFeed">{{enable}}</button>
   </div>
 </template>
 
 <script>
-// import OnoffToggle from 'vue-onoff-toggle';
 export default {
   name: 'App',
-  // components: {
-  //   OnoffToggle
-  // },
   data() {
     return {
       focus: false,
@@ -35,16 +26,6 @@ export default {
 
     }
   }
-  // mounted() {
-  //   setInterval(() => {
-  //     if (this.remainingTime > 0) {
-  //       this.remainingTime--
-  //     } 
-  //     else {
-  //       this.$q.bex.send('timeout')
-  //     }
-  //   }, 1000)
-  // }
 }
 
 </script>

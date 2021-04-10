@@ -2,7 +2,7 @@
 // Note: Events sent from this background script using `bridge.send` can be `listen`'d for by all client BEX bridges for this BEX
 
 // More info: https://quasar.dev/quasar-cli/developing-browser-extensions/background-hooks
-
+var openExtension = true;
 export default function attachBackgroundHooks (bridge /* , allActiveConnections */) {
   bridge.on('storage.get', event => {
     const payload = event.data
@@ -38,8 +38,10 @@ export default function attachBackgroundHooks (bridge /* , allActiveConnections 
   })
 
   chrome.browserAction.onClicked.addListener(() => {
-    bridge.send('activateFocus')
+    bridge.send('activateFocus', {openExtension: openExtension})
+    openExtension = !openExtension
   })
+
   /*
   // EXAMPLES
   // Listen to a message from the client

@@ -14,7 +14,13 @@ export default function attachContentHooks (bridge) {
   })
 
   bridge.on('activateFocus', function (event){
-    document.body.prepend(createIframe())
+    console.log(event.data)
+    const openExtension = event.data.openExtension
+    if (openExtension){
+      document.body.prepend(createIframe())
+    }else{
+      document.getElementsByTagName('iframe')[0].remove()
+    }
   })
 
 
