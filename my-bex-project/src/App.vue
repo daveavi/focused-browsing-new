@@ -28,6 +28,7 @@ export default {
         console.log("about to enter activation/deactivation")
         let activate = this.activate
         this.activate = !this.activate
+        console.log("currently activate is"  + activate)
         this.$q.bex.send('activateFocus', {openExtension: activate}).then(r => {
           console.log('Text has been highlighted')
         })

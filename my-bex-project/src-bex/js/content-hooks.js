@@ -1,6 +1,11 @@
 // Hooks added here have a bridge allowing communication between the BEX Content Script and the Quasar Application.
 // More info: https://quasar.dev/quasar-cli/developing-browser-extensions/content-hooks
 const FEED_CLASS = "css-1dbjc4n r-1jgb5lz r-1ye8kvj r-13qz1uu";
+const
+  iFrame = document.createElement('iframe'),
+  defaultFrameHeight = '0px',
+  defaultFrameWidth = '0px'
+  
 export default function attachContentHooks (bridge) {
   // handle event
   bridge.on('focus', function (event) {
@@ -16,9 +21,10 @@ export default function attachContentHooks (bridge) {
     console.log(event.data)
     const openExtension = event.data.openExtension
     if (openExtension){
-      document.body.prepend(createIframe())
+       setIFrameDimensions('100px', '120px')
     }else{
-      document.getElementsByTagName('iframe')[0].style = "hidden"
+      // document.getElementsByTagName('iframe')[0].style = "hidden"
+      setIFrameDimensions(defaultFrameHeight, defaultFrameWidth)
     }
 
     bridge.send(event.responseKey)
@@ -27,21 +33,28 @@ export default function attachContentHooks (bridge) {
 
 }
 
+
+const setIFrameDimensions = (height, width) => {
+  iFrame.height = height
+  iFrame.width = width
+  document.body.style.paddingLeft = width
+}
+
 // create iframe
 function createIframe () {
-  const iframe = document.createElement('iframe')
-  iframe.width = '120px'
-  iframe.height = '100px'
-
-  Object.assign(iframe.style, {
+  // const iframe = document.createElement('iframe')
+  // iframe.width = '120px'
+  // iframe.height = '100px'
+  setIFrameDimensions(defaultFrameHeight, defaultFrameWidth)
+  Object.assign(iFrame.style, {
     position: 'fixed',
     border: 'none',
     zIndex: '10000'
   })
 
-  iframe.src = chrome.runtime.getURL('www/index.html')
-  console.log(iframe.src)
-  return iframe
+  iFrame.src = chrome.runtime.getURL('www/index.html')
+  console.log(iFrame.src)
+  return iFrame
 }
 
 
