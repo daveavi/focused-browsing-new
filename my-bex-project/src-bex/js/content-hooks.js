@@ -1,7 +1,6 @@
 // Hooks added here have a bridge allowing communication between the BEX Content Script and the Quasar Application.
 // More info: https://quasar.dev/quasar-cli/developing-browser-extensions/content-hooks
 const FEED_CLASS = "css-1dbjc4n r-1jgb5lz r-1ye8kvj r-13qz1uu";
-
 export default function attachContentHooks (bridge) {
   // handle event
   bridge.on('focus', function (event) {
@@ -19,8 +18,10 @@ export default function attachContentHooks (bridge) {
     if (openExtension){
       document.body.prepend(createIframe())
     }else{
-      document.getElementsByTagName('iframe')[0].remove()
+      document.getElementsByTagName('iframe')[0].style = "hidden"
     }
+
+    bridge.send(event.responseKey)
   })
 
 
@@ -42,3 +43,11 @@ function createIframe () {
   console.log(iframe.src)
   return iframe
 }
+
+
+;(function () {
+  // When the page loads, insert our browser extension code.
+  var iFrame = createIframe() 
+  iFrame.src = chrome.runtime.getURL('www/index.html')
+  document.body.prepend(iFrame)
+})()

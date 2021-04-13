@@ -38,8 +38,15 @@ export default function attachBackgroundHooks (bridge /* , allActiveConnections 
   })
 
   chrome.browserAction.onClicked.addListener(() => {
-    bridge.send('activateFocus', {openExtension: openExtension})
-    openExtension = !openExtension
+    console.log("I am here")
+    bridge.send('bex.toggle.toolbar')
+  })
+
+  chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    bridge.send('bex.tab.opened', { url: tab.url }).then(response => {
+
+      console.log('Some response from the other side')
+    })
   })
 
   /*

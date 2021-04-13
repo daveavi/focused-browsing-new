@@ -10,11 +10,33 @@ export default {
   data() {
     return {
       focus: false,
-      enable: 'focus'
+      enable: 'focus',
+      activate: false
     }
   },
-
+  created(){
+    console.log("about to enter activation/deactivation")
+    this.$q.bex.on('bex.toggle.toolbar', this.toggleToolbar)
+    this.$q.bex.on('bex.tab.opened', this.doOnTabOpened)
+  },
+  beforeDestroy(){
+    this.$q.bex.off('bex.toggle.toolbar', this.toggleToolbar)
+    this.$q.bex.off('bex.tab.opened', this.doOnTabOpened)
+  },
   methods:{
+    toggleToolbar(url){
+        console.log("about to enter activation/deactivation")
+        let activate = this.activate
+        this.activate = !this.activate
+        this.$q.bex.send('activateFocus', {openExtension: activate}).then(r => {
+          console.log('Text has been highlighted')
+        })
+    },
+
+    doOnTabOpened (url) {
+      console.log('New Browser Tab Openend: ', url)
+    },
+
     hideFeed(){
       this.$q.bex.send(this.enable)
       this.focus = !this.focus
