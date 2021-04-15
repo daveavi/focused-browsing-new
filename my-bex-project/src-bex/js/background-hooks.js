@@ -38,7 +38,6 @@ export default function attachBackgroundHooks (bridge /* , allActiveConnections 
   })
 
   chrome.browserAction.onClicked.addListener(() => {
-    console.log("I am here")
     bridge.send('bex.toggle.toolbar')
   })
 

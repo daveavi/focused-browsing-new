@@ -9,25 +9,27 @@ const
 export default function attachContentHooks (bridge) {
   // handle event
   bridge.on('focus', function (event) {
-    console.log("got here")
+    console.log("focus mode")
     document.getElementsByClassName(FEED_CLASS)[1].style.visibility = "hidden"
   })
 
   bridge.on('un-focus', function (event) {
+    console.log("unfocus mode")
     document.getElementsByClassName(FEED_CLASS)[1].style.visibility = "visible"
   })
 
   bridge.on('activateFocus', function (event){
-    console.log(event.data)
     const openExtension = event.data.openExtension
     if (openExtension){
+       console.log("Open Frame")
        setIFrameDimensions('100px', '120px')
     }else{
+      console.log("Close Frame")
       // document.getElementsByTagName('iframe')[0].style = "hidden"
       setIFrameDimensions(defaultFrameHeight, defaultFrameWidth)
     }
 
-    bridge.send(event.responseKey)
+    // bridge.send(event.responseKey)
   })
 
 

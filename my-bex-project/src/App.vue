@@ -15,7 +15,6 @@ export default {
     }
   },
   created(){
-    console.log("about to enter activation/deactivation")
     this.$q.bex.on('bex.toggle.toolbar', this.toggleToolbar)
     this.$q.bex.on('bex.tab.opened', this.doOnTabOpened)
   },
