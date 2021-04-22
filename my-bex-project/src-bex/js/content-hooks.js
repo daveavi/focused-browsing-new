@@ -3,9 +3,10 @@
 const FEED_CLASS = "css-1dbjc4n r-1jgb5lz r-1ye8kvj r-13qz1uu";
 const
   iFrame = document.createElement('iframe'),
-  defaultFrameHeight = '0px',
-  defaultFrameWidth = '0px'
-  
+  defaultFrameHeight = '100px',
+  defaultFrameWidth = '120px'
+const currentUrl = window.document.URL
+console.log(currentUrl)
 export default function attachContentHooks (bridge) {
   // handle event
   bridge.on('focus', function (event) {
@@ -16,20 +17,6 @@ export default function attachContentHooks (bridge) {
   bridge.on('un-focus', function (event) {
     console.log("unfocus mode")
     document.getElementsByClassName(FEED_CLASS)[1].style.visibility = "visible"
-  })
-
-  bridge.on('activateFocus', function (event){
-    const openExtension = event.data.openExtension
-    if (openExtension){
-       console.log("Open Frame")
-       setIFrameDimensions('100px', '120px')
-    }else{
-      console.log("Close Frame")
-      // document.getElementsByTagName('iframe')[0].style = "hidden"
-      setIFrameDimensions(defaultFrameHeight, defaultFrameWidth)
-    }
-
-    // bridge.send(event.responseKey)
   })
 
 

@@ -19,7 +19,7 @@
     "persistent": true
   },
   "content_scripts": [{
-    "matches": ["<all_urls>"],
+    "matches": ["*://*.twitter.com/*", "*://*.linkedin.com/*"],
     "js": [
       "www/bex-content-script.js",
       "js/content-script.js"
@@ -29,7 +29,8 @@
     ]
   }],
   "permissions": [
-    "<all_urls>",
+    "*://*.twitter.com/*", 
+    "*://*.linkedin.com/*",
     "storage",
     "tabs",
     "activeTab"

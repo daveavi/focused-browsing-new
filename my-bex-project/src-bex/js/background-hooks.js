@@ -4,50 +4,42 @@
 // More info: https://quasar.dev/quasar-cli/developing-browser-extensions/background-hooks
 var openExtension = true;
 export default function attachBackgroundHooks (bridge /* , allActiveConnections */) {
-  bridge.on('storage.get', event => {
-    const payload = event.data
-    if (payload.key === null) {
-      chrome.storage.local.get(null, r => {
-        const result = []
+  // bridge.on('storage.get', event => {
+  //   const payload = event.data
+  //   if (payload.key === null) {
+  //     chrome.storage.local.get(null, r => {
+  //       const result = []
 
-        // Group the items up into an array to take advantage of the bridge's chunk splitting.
-        for (const itemKey in r) {
-          result.push(r[itemKey])
-        }
-        bridge.send(event.eventResponseKey, result)
-      })
-    } else {
-      chrome.storage.local.get([payload.key], r => {
-        bridge.send(event.eventResponseKey, r[payload.key])
-      })
-    }
-  })
+  //       // Group the items up into an array to take advantage of the bridge's chunk splitting.
+  //       for (const itemKey in r) {
+  //         result.push(r[itemKey])
+  //       }
+  //       bridge.send(event.eventResponseKey, result)
+  //     })
+  //   } else {
+  //     chrome.storage.local.get([payload.key], r => {
+  //       bridge.send(event.eventResponseKey, r[payload.key])
+  //     })
+  //   }
+  // })
 
-  bridge.on('storage.set', event => {
-    const payload = event.data
-    chrome.storage.local.set({ [payload.key]: payload.data }, () => {
-      bridge.send(event.eventResponseKey, payload.data)
-    })
-  })
+  // bridge.on('storage.set', event => {
+  //   const payload = event.data
+  //   chrome.storage.local.set({ [payload.key]: payload.data }, () => {
+  //     bridge.send(event.eventResponseKey, payload.data)
+  //   })
+  // })
 
-  bridge.on('storage.remove', event => {
-    const payload = event.data
-    chrome.storage.local.remove(payload.key, () => {
-      bridge.send(event.eventResponseKey, payload.data)
-    })
-  })
+  // bridge.on('storage.remove', event => {
+  //   const payload = event.data
+  //   chrome.storage.local.remove(payload.key, () => {
+  //     bridge.send(event.eventResponseKey, payload.data)
+  //   })
+  // })
 
-  chrome.browserAction.onClicked.addListener(() => {
-    bridge.send('bex.toggle.toolbar')
-  })
-
-  chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    bridge.send('bex.tab.opened', { url: tab.url }).then(response => {
-
-      console.log('Some response from the other side')
-    })
-  })
-
+  // chrome.browserAction.onClicked.addListener(() => {
+  //   bridge.send('bex.toggle.toolbar')
+  // })
   /*
   // EXAMPLES
   // Listen to a message from the client
