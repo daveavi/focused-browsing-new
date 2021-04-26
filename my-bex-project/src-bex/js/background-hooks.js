@@ -40,6 +40,7 @@ export default function attachBackgroundHooks (bridge /* , allActiveConnections 
   // chrome.browserAction.onClicked.addListener(() => {
   //   bridge.send('bex.toggle.toolbar')
   // })
+
   /*
   // EXAMPLES
   // Listen to a message from the client
@@ -59,4 +60,8 @@ export default function attachBackgroundHooks (bridge /* , allActiveConnections 
     }
   })
    */
+
+  chrome.commands.onCommand.addListener(function(command) {
+    console.log('onCommand event received for message: ', command);
+  });
 }
