@@ -6,22 +6,24 @@
 export default function attachBackgroundHooks (bridge /* , allActiveConnections */) {
   var focusMode = {"twitter": true, "linkedIn": true};
   var currentURL = null;
-  chrome.commands.onCommand.addListener(function(command) {
-    if (currentURL == "https://twitter.com/home") {
-      sendStatus(focusMode, "twitter", bridge)
-    } else if (currentURL == "https://www.linkedin.com/feed/") {
-      sendStatus(focusMode, "linkedIn", bridge)
-    }
+  
+
+  chrome.commands.onCommand.addListener(function(command , tab) {
+    chrome.tabs.get(tab.id, function(tab){
+      currentURL = tab.url;
+      console.log(currentURL)
+
+      if (currentURL == "https://twitter.com/home") {
+        console.log("sending message to twitter")
+        sendStatus(focusMode, "twitter", bridge)
+      } else if (currentURL == "https://www.linkedin.com/feed/") {
+        console.log("sending message to linkedin")
+        sendStatus(focusMode, "linkedIn", bridge)
+      }
+
+    });
   });
 
-
-  chrome.tabs.query({
-    active: true,
-    currentWindow: true
-  }, function(tabs) {
-    var tab = tabs[0];
-    currentURL = tab.url;
-  });
 }
 
 
@@ -33,3 +35,5 @@ function sendStatus(focusMode, webPage, bridge){
   }
   focusMode[webPage] = !focusMode[webPage]
 }
+
+
