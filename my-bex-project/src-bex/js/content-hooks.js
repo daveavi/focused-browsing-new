@@ -23,10 +23,13 @@ console.log(currentUrl)
 export default function attachContentHooks (bridge) {
   // handle event
   bridge.on('focus', function (event) {
+    console.log("here is")
     if (currentUrl == "https://twitter.com/home"){
+      console.log("here about to focus Twitter")
       hideTwitter(true)
     }
     else if(currentUrl == "https://www.linkedin.com/feed/"){
+      console.log("here about to focus linkedin")
       hideLinkedIn(true)
     }
   })
