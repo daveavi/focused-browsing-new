@@ -1,0 +1,25 @@
+{
+    "name": "Focused Browsing",
+    "version": "1.0.0",
+    "description": "Improving the focus of our browsing experience", 
+    "browser_action":{
+        "default_popup": "www/card.html"
+    },
+    "background":{
+        "scripts": ["js/background.js"],
+        "persistent": true
+    },
+    "content_scripts":[{
+        "matches": ["<all_urls>"],
+        "js": [
+            "js/content.js"
+        ]
+    }],
+    "web_accessible_resources" :[
+        "www/*",
+        "js/*",
+        "css/*",
+        "<all_urls>"
+    ],
+    "manifest_version": 2
+}
