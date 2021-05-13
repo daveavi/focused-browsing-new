@@ -2,15 +2,12 @@
     "name": "Focused Browsing",
     "version": "1.0.0",
     "description": "Improving the focus of our browsing experience", 
-    "browser_action":{
-        "default_popup": "www/card.html"
-    },
     "background":{
         "scripts": ["js/background.js"],
         "persistent": true
     },
     "content_scripts":[{
-        "matches": ["<all_urls>"],
+        "matches": ["*://*.twitter.com/*",  "*://*.linkedin.com/*"],
         "js": [
             "js/content.js"
         ]
@@ -21,5 +18,12 @@
         "css/*",
         "<all_urls>"
     ],
+    "permissions": [
+        "*://*.twitter.com/*", 
+        "*://*.linkedin.com/*",
+        "storage",
+        "tabs",
+        "activeTab"
+      ],
     "manifest_version": 2
 }
