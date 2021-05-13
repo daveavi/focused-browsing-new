@@ -7,19 +7,42 @@ chrome.runtime.onConnect.addListener(function (connectionPort) {
     console.assert(connectionPort.name == "Focused Browsing");
     port = connectionPort;
     console.log(connectionPort.name)
-    console.log("here")
 
     port.onMessage.addListener(function (msg) {
-    currentURL = msg.url
-    if (currentURL === "https://twitter.com/home") {
-        console.log("here about to initalize twitter")
-        // initializeFocus("twitter")
-    } else if (currentURL === "https://www.linkedin.com/feed/") {
-        // initializeFocus("linkedin")
-        console.log("here about to initalize linkedIn")
-    }
+      currentURL = msg.url
+      if (currentURL === "https://twitter.com/home") {
+          console.log("here about to initalize twitter")
+          // initializeFocus("twitter")
+          
+      } else if (currentURL === "https://www.linkedin.com/feed/") {
+          // initializeFocus("linkedin")
+          console.log("here about to initalize linkedIn")
+      }
+      registerCommandListener()
     });
+    
 });
+
+
+
+function registerCommandListener() {
+  console.log("registering command listener")
+  function toggleFocusListener(command) {
+      if (currentURL === "https://twitter.com/home") {
+        console.log("sending message to twitter")
+        // toggleFocus("twitter", bridge)
+      } else if (currentURL === "https://www.linkedin.com/feed/") {
+        console.log("sending message to linkedin")
+        // toggleFocus("linkedin", bridge)
+      }
+    });
+  }
+
+  chrome.commands.onCommand.addListener(toggleFocusListener);
+}
+
+
+
 
 
 
