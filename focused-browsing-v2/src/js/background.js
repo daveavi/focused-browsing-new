@@ -12,33 +12,26 @@ chrome.runtime.onConnect.addListener(function (connectionPort) {
       currentURL = msg.url
       if (currentURL === "https://twitter.com/home") {
           console.log("here about to initalize twitter")
-          // initializeFocus("twitter")
+          initializeFocus("twitter")
           
       } else if (currentURL === "https://www.linkedin.com/feed/") {
-          // initializeFocus("linkedin")
+          initializeFocus("linkedin")
           console.log("here about to initalize linkedIn")
       }
-      registerCommandListener()
     });
     
 });
 
 
-
-function registerCommandListener() {
-  console.log("registering command listener")
-  function toggleFocusListener(command) {
+chrome.commands.onCommand.addListener(toggleFocusListener);
+function toggleFocusListener(command) {
       if (currentURL === "https://twitter.com/home") {
         console.log("sending message to twitter")
-        // toggleFocus("twitter", bridge)
+        toggleFocus("twitter")
       } else if (currentURL === "https://www.linkedin.com/feed/") {
         console.log("sending message to linkedin")
-        // toggleFocus("linkedin", bridge)
+        toggleFocus("linkedin")
       }
-    });
-  }
-
-  chrome.commands.onCommand.addListener(toggleFocusListener);
 }
 
 
@@ -48,42 +41,39 @@ function registerCommandListener() {
 
   
 chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
-      console.log(sender.tab ?
-                  "from a content script:" + sender.tab.url :
-                  "from the extension");
-      if (request.greeting == "hello")
-        console.log("got message from vue button")
-        //send focus to content
-        // sendFocus()
-        //change state 
+  function(request, sender, sendResponse) {
+    console.log(sender.tab ?
+                "from a content script:" + sender.tab.url :
+                "from the extension");
+    if (request.greeting == "hello")
+      console.log("got message from vue button")
+      //send focus to content
+      // sendFocus()
+      //change state 
 
-        sendResponse({farewell: "goodbye"});
-    }
-  );
-
-
+      sendResponse({farewell: "goodbye"});
+  }
+);
 
 
-function toggleFocus(webPage, bridge) {
+
+
+function toggleFocus(webPage) {
     if (!focusMode[webPage].focus) {
-      sendFocus(webPage,bridge)
+      sendFocus(webPage)
     } else {
-      sendUnFocus(webPage,bridge)
+      sendUnFocus(webPage)
     }
     focusMode[webPage].focus = !focusMode[webPage].focus
 }
   
   
 function sendFocus(webPage){
-
+    port.postMessage({"status":'focus'})
 }
   
 function sendUnFocus(webPage){
-    chrome.runtime.sendMessage('un-focus', (response) => {
-        // 3. Got an asynchronous response with the data from the background
-        console.log('focus sent')
-    });
+    port.postMessage({"status":'unfocus'})
 }
   
   
