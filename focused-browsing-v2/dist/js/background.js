@@ -35,6 +35,22 @@ chrome.runtime.onConnect.addListener(function (connectionPort) {
     }
   });
 });
+
+function tabListener(tabId, changeInfo, tab) {
+  currentURL = tab.url;
+
+  if (currentURL === "https://twitter.com/home") {
+    if (focusMode["twitter"].focus) {
+      sendFocus("twitter");
+    }
+  } else if (currentURL === "https://www.linkedin.com/feed/") {
+    if (focusMode["linkedin"].focus) {
+      sendFocus("linkedin");
+    }
+  }
+}
+
+chrome.tabs.onUpdated.addListener(tabListener);
 chrome.commands.onCommand.addListener(toggleFocusListener);
 
 function toggleFocusListener(command) {

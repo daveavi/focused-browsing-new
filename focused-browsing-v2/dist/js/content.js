@@ -27,26 +27,23 @@ port.postMessage({
 port.onMessage.addListener(function (msg) {
   console.log(msg);
 
-  switch (msg.status) {
-    case "focus":
-      if (firstURLConnection.includes("twitter")) {
-        console.log("about to enter focus on Twitter"); // startIframe();
+  if (msg.status == "focus") {
+    if (firstURLConnection.includes("twitter")) {
+      console.log("about to enter focus on Twitter"); // startIframe();
 
-        focusTwitter();
-      } else if (firstURLConnection.includes("linkedin")) {
-        console.log("about to focus on linkedin");
-        hideLinkedIn(true);
-      }
-
-    case "unfocus":
-      if (firstURLConnection.includes("twitter")) {
-        console.log("about to un-focus on Twitter");
-        toggleTwitterDistractions(false);
-      } else if (firstURLConnection.includes("twitter")) {
-        console.log("about to un-focus on linkedin");
-        hideLinkedIn(false);
-      }
-
+      focusTwitter();
+    } else if (firstURLConnection.includes("linkedin")) {
+      console.log("about to focus on linkedin");
+      hideLinkedIn(true);
+    }
+  } else if (msg.status == "unfocus") {
+    if (firstURLConnection.includes("twitter")) {
+      console.log("about to un-focus on Twitter");
+      toggleTwitterDistractions(false);
+    } else if (firstURLConnection.includes("linkedin")) {
+      console.log("about to un-focus on linkedin");
+      hideLinkedIn(false);
+    }
   }
 });
 ;
@@ -82,10 +79,14 @@ function injectIframe() {
 }
 
 function hideLinkedIn(hide) {
+  console.log("here in this linkedIn function");
+
   try {
     if (hide) {
+      console.log("about to hide linkedIn feed");
       document.getElementsByClassName(HOME_PAGE_CLASS)[0].style.visibility = VISIBILITY_HIDDEN;
     } else {
+      console.log("about to make linkedIn feed visible");
       document.getElementsByClassName(HOME_PAGE_CLASS)[0].style.visibility = VISIBILITY_VISIBLE;
     }
   } catch (err) {
