@@ -24,11 +24,18 @@ port.postMessage({url: firstURLConnection});
 
 port.onMessage.addListener(function (msg) {
     console.log(msg)
-    if (msg.status == "focus"){
-        if (firstURLConnection.includes("twitter")) {
-            console.log("about to enter focus on Twitter");
+    let status = msg.status
+    let method = msg.method
+    if (status == "focus"){
+        if(method == "removeIframe"){
+            removeIframe()
+        }else if (firstURLConnection.includes("twitter")) {
+            if(method == "initial"){
+                focusTwitter();
+            }else{
+                toggleTwitterDistractions(true);
+            }
             startIframe();
-            focusTwitter();
         } else if (firstURLConnection.includes("linkedin")){
             console.log("about to focus on linkedin");
             startIframe();

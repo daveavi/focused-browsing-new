@@ -20,47 +20,42 @@ chrome.runtime.onConnect.addListener(function (connectionPort) {
           initializeFocus("linkedin")
           console.log("here about to initalize linkedIn")
       }
-
-      // registerTabsListener()
+      isTabListenerRegistered = true
     });
-    registerTabsListener()
+
     
 });
 
 
-function registerTabsListener(){
-  console.log(`INFO: Is Tab listener registered? : ${isTabListenerRegistered}`)
-
-  if (isTabListenerRegistered) {
-    console.log("WARNING: Tab listener already registered, skipping")
-    return
-  }
-
-
-  function tabListener(tabId, changeInfo, tab){
-    console.log(tabId)
-    console.log(changeInfo)
-    currentURL = tab.url
-    if(changeInfo && changeInfo.status === "complete" && isTabListenerRegistered){
-      if (currentURL === "https://twitter.com/home") {
+function tabListener(tabId, changeInfo, tab){
+  console.log(tabId)
+  console.log(changeInfo)
+  console.log(isTabListenerRegistered)
+  currentURL = tab.url
+  if(changeInfo && changeInfo.status === "complete" && isTabListenerRegistered){
+    if(currentURL.includes("twitter.com")){
         if(focusMode["twitter"].focus){
-          console.log("listener is listening to twitter page")
-          sendStatus("twitter","focus")
+          if (currentURL === "https://twitter.com/home") {
+            console.log("listener is listening to twitter page")
+            sendStatus("twitter","focus", "tab")
+          }else{
+            sendStatus("twitter","focus","removeIframe")
+          }
         }
-      } else if (currentURL === "https://www.linkedin.com/feed/") {
-        if(focusMode["linkedin"].focus){
-          console.log("listener is listening to linkedin page")
-          sendStatus("linkedin","focus")
+    } else if(currentURL.includes("linkedin.com")) {
+      if(focusMode["linkedin"].focus){
+        if (currentURL === "https://www.linkedin.com/feed/") {
+          console.log("listener is listening to twitter page")
+          sendStatus("linkedin","focus", "tab")
+        }else{
+          sendStatus("linkedin","focus","removeIframe")
         }
       }
-
-
     }
   }
-  chrome.tabs.onUpdated.addListener(tabListener);
-  isTabListenerRegistered = true
-  console.log("SUCCESS: Tab listener registered")
 }
+
+chrome.tabs.onUpdated.addListener(tabListener);
 
 
 chrome.commands.onCommand.addListener(toggleFocusListener);
@@ -104,19 +99,19 @@ chrome.runtime.onMessage.addListener(
 function toggleFocus(webPage) {
     if (!focusMode[webPage].focus) {
       console.log("focus mode on " + webPage)
-      sendStatus(webPage,"focus")
+      sendStatus(webPage,"focus",  "toggle")
     } else {
       console.log("unfocus mode on " + webPage)
-      sendStatus(webPage,"unfocus")
+      sendStatus(webPage,"unfocus", "toggle")
     }
     focusMode[webPage].focus = !focusMode[webPage].focus
 }
   
   
-function sendStatus(webPage,status){
+function sendStatus(webPage,status,method){
   try{
     console.log("sending status " + status +" on "+webPage)
-    port.postMessage({"status":status})
+    port.postMessage({"status":status, "method": method})
   }catch(err){
     console.log("background script hasn't initialized port")
   }
@@ -129,7 +124,7 @@ function initializeFocus(webPage){
     var initializeFocus = !focusMode[webPage].initialized || focusMode[webPage].focus
     if(initializeFocus){
       console.log("initializing focus")
-      sendStatus(webPage,"focus")
+      sendStatus(webPage,"focus","initial")
       console.log(focusMode)
     }
   
