@@ -81,13 +81,10 @@ chrome.runtime.onMessage.addListener(
     console.log(sender.tab ?
                 "from a content script:" + sender.tab.url :
                 "from the extension");
-    if (request.greeting == "hello")
-      console.log("got message from vue button")
-      //send focus to content
-      // sendFocus()
-      //change state 
-
-      sendResponse({farewell: "goodbye"});
+    let webPage = currentURL.includes("twitter.com")? "twitter" : "linkedin"
+    if (request.status == "focus"){
+      toggleFocus(webPage)
+    }
   }
 );
 

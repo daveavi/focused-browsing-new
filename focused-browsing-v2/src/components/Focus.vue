@@ -2,7 +2,7 @@
     <div>
         <h1>Hello World</h1>
         <p>Focused Browsing coming soon</p>
-        <button type="button" @click="sendToBackground">Focus</button>
+        <button type="button" @click="sendToBackground">Un-Focus</button>
     </div>
 </template>
 <script>
@@ -14,7 +14,7 @@ export default {
     },
     methods: {
         sendToBackground() {
-            chrome.runtime.sendMessage({greeting: "hello"}, function(response) {
+            chrome.runtime.sendMessage({status: "focus"}, function(response) {
                 console.log(response.farewell);
             });
         }

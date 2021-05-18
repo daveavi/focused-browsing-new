@@ -1,1 +1,286 @@
-(()=>{var e,o={562:()=>{var e,o,t={twitter:{focus:!0,initialized:!1},linkedin:{focus:!0,initialized:!1}},n=!1;function i(e){t[e].focus?(console.log("unfocus mode on "+e),s(e,"unfocus","toggle")):(console.log("focus mode on "+e),s(e,"focus","toggle")),t[e].focus=!t[e].focus}function s(e,t,n){try{console.log("sending status "+t+" on "+e),o.postMessage({status:t,method:n})}catch(e){console.log("background script hasn't initialized port")}}function l(e){(!t[e].initialized||t[e].focus)&&(console.log("initializing focus"),s(e,"focus","initial"),console.log(t)),t[e].initialized||(t[e].initialized=!t[e].initialized,console.log(t))}chrome.runtime.onConnect.addListener((function(t){console.assert("Focused Browsing"==t.name),o=t,console.log(t.name),o.onMessage.addListener((function(o){"https://twitter.com/home"===(e=o.url)?(console.log("here about to initalize twitter"),l("twitter")):"https://www.linkedin.com/feed/"===e&&(l("linkedin"),console.log("here about to initalize linkedIn")),n=!0}))})),chrome.tabs.onUpdated.addListener((function(o,i,l){console.log(o),console.log(i),console.log(n),e=l.url,i&&"complete"===i.status&&n&&(e.includes("twitter.com")?t.twitter.focus&&("https://twitter.com/home"===e?(console.log("listener is listening to twitter page"),s("twitter","focus","tab")):s("twitter","focus","removeIframe")):e.includes("linkedin.com")&&t.linkedin.focus&&("https://www.linkedin.com/feed/"===e?(console.log("listener is listening to twitter page"),s("linkedin","focus","tab")):s("linkedin","focus","removeIframe")))})),chrome.commands.onCommand.addListener((function(o){"https://twitter.com/home"===e?(console.log("sending message to twitter"),i("twitter")):"https://www.linkedin.com/feed/"===e&&(console.log("sending message to linkedin"),i("linkedin"))})),chrome.runtime.onMessage.addListener((function(e,o,t){console.log(o.tab?"from a content script:"+o.tab.url:"from the extension"),"hello"==e.greeting&&console.log("got message from vue button"),t({farewell:"goodbye"})}))},121:()=>{}},t={};function n(e){var i=t[e];if(void 0!==i)return i.exports;var s=t[e]={exports:{}};return o[e](s,s.exports,n),s.exports}n.m=o,e=[],n.O=(o,t,i,s)=>{if(!t){var l=1/0;for(a=0;a<e.length;a++){for(var[t,i,s]=e[a],r=!0,c=0;c<t.length;c++)(!1&s||l>=s)&&Object.keys(n.O).every((e=>n.O[e](t[c])))?t.splice(c--,1):(r=!1,s<l&&(l=s));r&&(e.splice(a--,1),o=i())}return o}s=s||0;for(var a=e.length;a>0&&e[a-1][2]>s;a--)e[a]=e[a-1];e[a]=[t,i,s]},n.o=(e,o)=>Object.prototype.hasOwnProperty.call(e,o),(()=>{var e={248:0,338:0};n.O.j=o=>0===e[o];var o=(o,t)=>{var i,s,[l,r,c]=t,a=0;for(i in r)n.o(r,i)&&(n.m[i]=r[i]);if(c)var u=c(n);for(o&&o(t);a<l.length;a++)s=l[a],n.o(e,s)&&e[s]&&e[s][0](),e[l[a]]=0;return n.O(u)},t=self.webpackChunk=self.webpackChunk||[];t.forEach(o.bind(null,0)),t.push=o.bind(null,t.push.bind(t))})(),n.O(void 0,[338],(()=>n(562)));var i=n.O(void 0,[338],(()=>n(121)));i=n.O(i)})();
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./src/js/background.js":
+/*!******************************!*\
+  !*** ./src/js/background.js ***!
+  \******************************/
+/***/ (() => {
+
+var focusMode = {
+  "twitter": {
+    "focus": true,
+    "initialized": false
+  },
+  "linkedin": {
+    "focus": true,
+    "initialized": false
+  }
+};
+var currentURL;
+var port;
+var isTabListenerRegistered = false;
+chrome.runtime.onConnect.addListener(function (connectionPort) {
+  console.assert(connectionPort.name == "Focused Browsing");
+  port = connectionPort;
+  console.log(connectionPort.name);
+  port.onMessage.addListener(function (msg) {
+    currentURL = msg.url;
+
+    if (currentURL === "https://twitter.com/home") {
+      console.log("here about to initalize twitter");
+      initializeFocus("twitter");
+    } else if (currentURL === "https://www.linkedin.com/feed/") {
+      initializeFocus("linkedin");
+      console.log("here about to initalize linkedIn");
+    }
+
+    isTabListenerRegistered = true;
+  });
+});
+
+function tabListener(tabId, changeInfo, tab) {
+  console.log(tabId);
+  console.log(changeInfo);
+  console.log(isTabListenerRegistered);
+  currentURL = tab.url;
+
+  if (changeInfo && changeInfo.status === "complete" && isTabListenerRegistered) {
+    if (currentURL.includes("twitter.com")) {
+      if (focusMode["twitter"].focus) {
+        if (currentURL === "https://twitter.com/home") {
+          console.log("listener is listening to twitter page");
+          sendStatus("twitter", "focus", "tab");
+        } else {
+          sendStatus("twitter", "focus", "removeIframe");
+        }
+      }
+    } else if (currentURL.includes("linkedin.com")) {
+      if (focusMode["linkedin"].focus) {
+        if (currentURL === "https://www.linkedin.com/feed/") {
+          console.log("listener is listening to twitter page");
+          sendStatus("linkedin", "focus", "tab");
+        } else {
+          sendStatus("linkedin", "focus", "removeIframe");
+        }
+      }
+    }
+  }
+}
+
+chrome.tabs.onUpdated.addListener(tabListener);
+chrome.commands.onCommand.addListener(toggleFocusListener);
+
+function toggleFocusListener(command) {
+  if (currentURL === "https://twitter.com/home") {
+    console.log("sending message to twitter");
+    toggleFocus("twitter");
+  } else if (currentURL === "https://www.linkedin.com/feed/") {
+    console.log("sending message to linkedin");
+    toggleFocus("linkedin");
+  }
+}
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  console.log(sender.tab ? "from a content script:" + sender.tab.url : "from the extension");
+  var webPage = currentURL.includes("twitter.com") ? "twitter" : "linkedin";
+
+  if (request.status == "focus") {
+    toggleFocus(webPage);
+  }
+});
+
+function toggleFocus(webPage) {
+  if (!focusMode[webPage].focus) {
+    console.log("focus mode on " + webPage);
+    sendStatus(webPage, "focus", "toggle");
+  } else {
+    console.log("unfocus mode on " + webPage);
+    sendStatus(webPage, "unfocus", "toggle");
+  }
+
+  focusMode[webPage].focus = !focusMode[webPage].focus;
+}
+
+function sendStatus(webPage, status, method) {
+  try {
+    console.log("sending status " + status + " on " + webPage);
+    port.postMessage({
+      "status": status,
+      "method": method
+    });
+  } catch (err) {
+    console.log("background script hasn't initialized port");
+  }
+}
+
+function initializeFocus(webPage) {
+  var initializeFocus = !focusMode[webPage].initialized || focusMode[webPage].focus;
+
+  if (initializeFocus) {
+    console.log("initializing focus");
+    sendStatus(webPage, "focus", "initial");
+    console.log(focusMode);
+  }
+
+  if (!focusMode[webPage].initialized) {
+    focusMode[webPage].initialized = !focusMode[webPage].initialized;
+    console.log(focusMode);
+  }
+}
+
+/***/ }),
+
+/***/ "./src/sass/card.scss":
+/*!****************************!*\
+  !*** ./src/sass/card.scss ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = __webpack_modules__;
+/******/ 	
+/************************************************************************/
+/******/ 	/* webpack/runtime/chunk loaded */
+/******/ 	(() => {
+/******/ 		var deferred = [];
+/******/ 		__webpack_require__.O = (result, chunkIds, fn, priority) => {
+/******/ 			if(chunkIds) {
+/******/ 				priority = priority || 0;
+/******/ 				for(var i = deferred.length; i > 0 && deferred[i - 1][2] > priority; i--) deferred[i] = deferred[i - 1];
+/******/ 				deferred[i] = [chunkIds, fn, priority];
+/******/ 				return;
+/******/ 			}
+/******/ 			var notFulfilled = Infinity;
+/******/ 			for (var i = 0; i < deferred.length; i++) {
+/******/ 				var [chunkIds, fn, priority] = deferred[i];
+/******/ 				var fulfilled = true;
+/******/ 				for (var j = 0; j < chunkIds.length; j++) {
+/******/ 					if ((priority & 1 === 0 || notFulfilled >= priority) && Object.keys(__webpack_require__.O).every((key) => (__webpack_require__.O[key](chunkIds[j])))) {
+/******/ 						chunkIds.splice(j--, 1);
+/******/ 					} else {
+/******/ 						fulfilled = false;
+/******/ 						if(priority < notFulfilled) notFulfilled = priority;
+/******/ 					}
+/******/ 				}
+/******/ 				if(fulfilled) {
+/******/ 					deferred.splice(i--, 1)
+/******/ 					result = fn();
+/******/ 				}
+/******/ 			}
+/******/ 			return result;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/jsonp chunk loading */
+/******/ 	(() => {
+/******/ 		// no baseURI
+/******/ 		
+/******/ 		// object to store loaded and loading chunks
+/******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
+/******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
+/******/ 		var installedChunks = {
+/******/ 			"/dist/js/background": 0,
+/******/ 			"dist/css/card": 0
+/******/ 		};
+/******/ 		
+/******/ 		// no chunk on demand loading
+/******/ 		
+/******/ 		// no prefetching
+/******/ 		
+/******/ 		// no preloaded
+/******/ 		
+/******/ 		// no HMR
+/******/ 		
+/******/ 		// no HMR manifest
+/******/ 		
+/******/ 		__webpack_require__.O.j = (chunkId) => (installedChunks[chunkId] === 0);
+/******/ 		
+/******/ 		// install a JSONP callback for chunk loading
+/******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
+/******/ 			var [chunkIds, moreModules, runtime] = data;
+/******/ 			// add "moreModules" to the modules object,
+/******/ 			// then flag all "chunkIds" as loaded and fire callback
+/******/ 			var moduleId, chunkId, i = 0;
+/******/ 			for(moduleId in moreModules) {
+/******/ 				if(__webpack_require__.o(moreModules, moduleId)) {
+/******/ 					__webpack_require__.m[moduleId] = moreModules[moduleId];
+/******/ 				}
+/******/ 			}
+/******/ 			if(runtime) var result = runtime(__webpack_require__);
+/******/ 			if(parentChunkLoadingFunction) parentChunkLoadingFunction(data);
+/******/ 			for(;i < chunkIds.length; i++) {
+/******/ 				chunkId = chunkIds[i];
+/******/ 				if(__webpack_require__.o(installedChunks, chunkId) && installedChunks[chunkId]) {
+/******/ 					installedChunks[chunkId][0]();
+/******/ 				}
+/******/ 				installedChunks[chunkIds[i]] = 0;
+/******/ 			}
+/******/ 			return __webpack_require__.O(result);
+/******/ 		}
+/******/ 		
+/******/ 		var chunkLoadingGlobal = self["webpackChunk"] = self["webpackChunk"] || [];
+/******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
+/******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
+/******/ 	})();
+/******/ 	
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
+/******/ 	__webpack_require__.O(undefined, ["dist/css/card"], () => (__webpack_require__("./src/js/background.js")))
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["dist/css/card"], () => (__webpack_require__("./src/sass/card.scss")))
+/******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
+/******/ 	
+/******/ })()
+;
