@@ -3,6 +3,8 @@ var focusMode = {"twitter": {"focus": true, "initialized": false}, "linkedin":{"
 var currentURL;
 var port;
 
+var isTabListenerRegistered = false 
+
 chrome.runtime.onConnect.addListener(function (connectionPort) {
     console.assert(connectionPort.name == "Focused Browsing");
     port = connectionPort;
@@ -18,27 +20,49 @@ chrome.runtime.onConnect.addListener(function (connectionPort) {
           initializeFocus("linkedin")
           console.log("here about to initalize linkedIn")
       }
+
+      // registerTabsListener()
     });
+    registerTabsListener()
     
 });
 
 
-function tabListener(tabId, changeInfo, tab){
-  currentURL = tab.url
-  if (currentURL === "https://twitter.com/home") {
-    if(focusMode["twitter"].focus){
-      sendFocus("twitter")
-    }
-  } else if (currentURL === "https://www.linkedin.com/feed/") {
-    if(focusMode["linkedin"].focus){
-      sendFocus("linkedin")
-    }
+function registerTabsListener(){
+  console.log(`INFO: Is Tab listener registered? : ${isTabListenerRegistered}`)
+
+  if (isTabListenerRegistered) {
+    console.log("WARNING: Tab listener already registered, skipping")
+    return
   }
 
 
+  function tabListener(tabId, changeInfo, tab){
+    console.log(tabId)
+    console.log(changeInfo)
+    currentURL = tab.url
+    if(changeInfo && changeInfo.status === "complete" && isTabListenerRegistered){
+      if (currentURL === "https://twitter.com/home") {
+        if(focusMode["twitter"].focus){
+          console.log("listener is listening to twitter page")
+          sendStatus("twitter","focus")
+        }
+      } else if (currentURL === "https://www.linkedin.com/feed/") {
+        if(focusMode["linkedin"].focus){
+          console.log("listener is listening to linkedin page")
+          sendStatus("linkedin","focus")
+        }
+      }
+
+
+    }
+  }
+  chrome.tabs.onUpdated.addListener(tabListener);
+  isTabListenerRegistered = true
+  console.log("SUCCESS: Tab listener registered")
 }
 
-chrome.tabs.onUpdated.addListener(tabListener);
+
 chrome.commands.onCommand.addListener(toggleFocusListener);
 
 function toggleFocusListener(command) {
@@ -79,28 +103,33 @@ chrome.runtime.onMessage.addListener(
 
 function toggleFocus(webPage) {
     if (!focusMode[webPage].focus) {
-      sendFocus(webPage)
+      console.log("focus mode on " + webPage)
+      sendStatus(webPage,"focus")
     } else {
-      sendUnFocus(webPage)
+      console.log("unfocus mode on " + webPage)
+      sendStatus(webPage,"unfocus")
     }
     focusMode[webPage].focus = !focusMode[webPage].focus
 }
   
   
-function sendFocus(webPage){
-    port.postMessage({"status":'focus'})
+function sendStatus(webPage,status){
+  try{
+    console.log("sending status " + status +" on "+webPage)
+    port.postMessage({"status":status})
+  }catch(err){
+    console.log("background script hasn't initialized port")
+  }
 }
   
-function sendUnFocus(webPage){
-    port.postMessage({"status":'unfocus'})
-}
+
   
   
 function initializeFocus(webPage){
     var initializeFocus = !focusMode[webPage].initialized || focusMode[webPage].focus
     if(initializeFocus){
       console.log("initializing focus")
-      sendFocus(webPage)
+      sendStatus(webPage,"focus")
       console.log(focusMode)
     }
   

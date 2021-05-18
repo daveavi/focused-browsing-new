@@ -15,7 +15,7 @@ const HOME_PAGE_CLASS = "self-focused ember-view";
 var appIframe;
 const DEFAULT_FRAME_HEIGHT = "100px";
 const DEFAULT_FRAME_WIDTH = "120px";
-
+const IFRAME_ID = "focus-card"
 var firstURLConnection = window.location.toString()
 
 var initialLoad = false
@@ -27,10 +27,11 @@ port.onMessage.addListener(function (msg) {
     if (msg.status == "focus"){
         if (firstURLConnection.includes("twitter")) {
             console.log("about to enter focus on Twitter");
-            // startIframe();
+            startIframe();
             focusTwitter();
         } else if (firstURLConnection.includes("linkedin")){
             console.log("about to focus on linkedin");
+            startIframe();
             hideLinkedIn(true);
         }
     }else if(msg.status == "unfocus"){
@@ -42,8 +43,6 @@ port.onMessage.addListener(function (msg) {
             hideLinkedIn(false);
         }
     }
-
-
 });
 
 
@@ -60,8 +59,6 @@ port.onMessage.addListener(function (msg) {
 ;(function () {
     console.log("welcome to the content script")
     initIframe()
-    startIframe()
-    injectIframe()
 })()
 
 function initIframe() {
@@ -78,6 +75,7 @@ function startIframe() {
 function injectIframe() {
     appIframe.width = DEFAULT_FRAME_WIDTH;
     appIframe.height = DEFAULT_FRAME_HEIGHT;
+    appIframe.id = IFRAME_ID
     // document.body.style.paddingLeft = width;
     Object.assign(appIframe.style, {
         position: "fixed",
@@ -86,6 +84,10 @@ function injectIframe() {
     });
     document.body.prepend(appIframe);
     console.log(appIframe);
+}
+
+function removeIframe(){
+    document.getElementById(IFRAME_ID).remove()
 }
 
 
@@ -97,11 +99,13 @@ function hideLinkedIn(hide) {
         document.getElementsByClassName(
           HOME_PAGE_CLASS
         )[0].style.visibility = VISIBILITY_HIDDEN;
+        injectIframe()
       } else {
         console.log("about to make linkedIn feed visible")
         document.getElementsByClassName(
           HOME_PAGE_CLASS
         )[0].style.visibility = VISIBILITY_VISIBLE;
+        removeIframe()
       }
     } catch (err) {
       console.log(err);
@@ -110,6 +114,8 @@ function hideLinkedIn(hide) {
   
   var areDistractionsHidden = false;
   function toggleTwitterDistractions(shouldHide) {
+    console.log("here we are in toggle twitter distraction")
+    console.log("should hide is: " + shouldHide)
     try {
       if (shouldHide) {
         document.getElementsByClassName(
@@ -121,6 +127,7 @@ function hideLinkedIn(hide) {
         injectIframe();
         areDistractionsHidden = true;
       } else {
+        console.log("here is our un focus block of code")
         document.getElementsByClassName(
           TWITTER_FEED_CLASS
         )[0].style.visibility = VISIBILITY_VISIBLE;
@@ -128,6 +135,7 @@ function hideLinkedIn(hide) {
           TWITTER_PANEL_CLASS
         )[1].style.visibility = VISIBILITY_VISIBLE;
         areDistractionsHidden = false;
+        removeIframe()
       }
     } catch (err) {
       console.log(err);
@@ -136,11 +144,16 @@ function hideLinkedIn(hide) {
   
   var intervalId;
   function tryBlockingTwitterHome() {
+    console.log("we are trying to block twitter home")
     if (areDistractionsHidden) {
+      console.log("we can clear the interval")
+      console.log(intervalId)
       clearInterval(intervalId);
+      return
     } else {
       try {
         if (homePageTwitterHasLoaded()) {
+            console.log("here in blocking twitter")
             toggleTwitterDistractions(true);
         }
       } catch (err) {
@@ -150,6 +163,7 @@ function hideLinkedIn(hide) {
   }
   
   function focusTwitter() {
+    console.log("setting interval to block twitter")
     if (initialLoad) {
       intervalId = setInterval(tryBlockingTwitterHome, 1000);
       initialLoad = false;
