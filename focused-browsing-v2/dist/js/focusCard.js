@@ -28,7 +28,7 @@ __webpack_require__.r(__webpack_exports__);
       chrome.runtime.sendMessage({
         status: "focus"
       }, function (response) {
-        console.log(response.farewell);
+        console.log(response);
       });
     }
   }

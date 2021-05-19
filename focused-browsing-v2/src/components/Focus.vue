@@ -15,7 +15,7 @@ export default {
     methods: {
         sendToBackground() {
             chrome.runtime.sendMessage({status: "focus"}, function(response) {
-                console.log(response.farewell);
+                console.log(response);
             });
         }
 

@@ -83,11 +83,18 @@ function toggleFocusListener(command) {
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   console.log(sender.tab ? "from a content script:" + sender.tab.url : "from the extension");
+  console.log(currentURL);
+  console.log(currentURL.includes("twitter.com"));
   var webPage = currentURL.includes("twitter.com") ? "twitter" : "linkedin";
 
   if (request.status == "focus") {
     toggleFocus(webPage);
   }
+
+  sendResponse({
+    enabled: "focus"
+  });
+  return true;
 });
 
 function toggleFocus(webPage) {

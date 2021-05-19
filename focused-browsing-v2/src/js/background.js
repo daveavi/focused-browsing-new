@@ -81,10 +81,15 @@ chrome.runtime.onMessage.addListener(
     console.log(sender.tab ?
                 "from a content script:" + sender.tab.url :
                 "from the extension");
-    let webPage = currentURL.includes("twitter.com")? "twitter" : "linkedin"
+    console.log(currentURL)
+    console.log(currentURL.includes("twitter.com"))
+    let webPage = currentURL.includes("twitter.com") ? "twitter" : "linkedin"
     if (request.status == "focus"){
       toggleFocus(webPage)
     }
+    sendResponse({enabled: "focus"})
+    return true
+
   }
 );
 
