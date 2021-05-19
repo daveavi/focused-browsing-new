@@ -17,75 +17,72 @@ var focusMode = {
     "initialized": false
   }
 };
-var currentURL;
+var activeURL;
 var port;
-var isTabListenerRegistered = false;
 chrome.runtime.onConnect.addListener(function (connectionPort) {
+  console.log(connectionPort);
   console.assert(connectionPort.name == "Focused Browsing");
   port = connectionPort;
   console.log(connectionPort.name);
   port.onMessage.addListener(function (msg) {
-    currentURL = msg.url;
+    console.log("here");
+    console.log(msg);
+    activeURL = msg.url;
 
-    if (currentURL === "https://twitter.com/home") {
+    if (activeURL === "https://twitter.com/" || activeURL === "https://twitter.com/home") {
       console.log("here about to initalize twitter");
       initializeFocus("twitter");
-    } else if (currentURL === "https://www.linkedin.com/feed/") {
+    } else if (activeURL === "https://www.linkedin.com/feed/") {
       initializeFocus("linkedin");
       console.log("here about to initalize linkedIn");
     }
-
-    isTabListenerRegistered = true;
   });
-});
+}); // chrome.tabs.onActivated.addListener(function(activeInfo, tab) {
+//   chrome.tabs.getSelected(null,function(tab) {
+//     activeURL = tab.url;
+//     console.log("activeURL is: "+ activeURL)
+//   });
+// });
 
-function tabListener(tabId, changeInfo, tab) {
-  console.log(tabId);
-  console.log(changeInfo);
-  console.log(isTabListenerRegistered);
-  currentURL = tab.url;
-
-  if (changeInfo && changeInfo.status === "complete" && isTabListenerRegistered) {
-    if (currentURL.includes("twitter.com")) {
-      if (focusMode["twitter"].focus) {
-        if (currentURL === "https://twitter.com/home") {
-          console.log("listener is listening to twitter page");
-          sendStatus("twitter", "focus", "tab");
-        } else {
-          sendStatus("twitter", "focus", "removeIframe");
-        }
-      }
-    } else if (currentURL.includes("linkedin.com")) {
-      if (focusMode["linkedin"].focus) {
-        if (currentURL === "https://www.linkedin.com/feed/") {
-          console.log("listener is listening to twitter page");
-          sendStatus("linkedin", "focus", "tab");
-        } else {
-          sendStatus("linkedin", "focus", "removeIframe");
-        }
-      }
-    }
-  }
-}
-
-chrome.tabs.onUpdated.addListener(tabListener);
 chrome.commands.onCommand.addListener(toggleFocusListener);
 
-function toggleFocusListener(command) {
-  if (currentURL === "https://twitter.com/home") {
+function toggleFocusListener(command, tab) {
+  console.log(command);
+
+  if (activeURL === "https://twitter.com/home" || activeURL === "https://twitter.com/") {
     console.log("sending message to twitter");
     toggleFocus("twitter");
-  } else if (currentURL === "https://www.linkedin.com/feed/") {
+  } else if (activeURL === "https://www.linkedin.com/feed/") {
     console.log("sending message to linkedin");
     toggleFocus("linkedin");
   }
-}
+} // function tabMonitor(){
+//   if(currentURL.includes("twitter.com")){
+//       if(focusMode["twitter"].focus){
+//         if (currentURL === "https://twitter.com/home") {
+//           console.log("listener is listening to twitter page")
+//           sendStatus("twitter","focus", "tab")
+//         }else{
+//           console.log("sending removeIframe")
+//           sendStatus("twitter","focus","removeIframe")
+//         }
+//       }
+//   } else if(currentURL.includes("linkedin.com")) {
+//     if(focusMode["linkedin"].focus){
+//       if (currentURL === "https://www.linkedin.com/feed/") {
+//         console.log("listener is listening to linkedin page")
+//         sendStatus("linkedin","focus", "tab")
+//       }else{
+//         sendStatus("linkedin","focus","removeIframe")
+//       }
+//     }
+//   }
+// }
+
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   console.log(sender.tab ? "from a content script:" + sender.tab.url : "from the extension");
-  console.log(currentURL);
-  console.log(currentURL.includes("twitter.com"));
-  var webPage = currentURL.includes("twitter.com") ? "twitter" : "linkedin";
+  var webPage = activeURL.includes("twitter.com") ? "twitter" : "linkedin";
 
   if (request.status == "focus") {
     toggleFocus(webPage);
@@ -111,10 +108,18 @@ function toggleFocus(webPage) {
 
 function sendStatus(webPage, status, method) {
   try {
-    console.log("sending status " + status + " on " + webPage);
-    port.postMessage({
-      "status": status,
-      "method": method
+    console.log("sending status " + status + " on " + webPage); // port.postMessage({"status":status, "method": method})
+
+    chrome.tabs.query({
+      active: true,
+      currentWindow: true
+    }, function (tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, {
+        "status": status,
+        "method": method
+      }, function (response) {
+        console.log(response.farewell);
+      });
     });
   } catch (err) {
     console.log("background script hasn't initialized port");

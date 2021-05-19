@@ -19,13 +19,9 @@ var DEFAULT_FRAME_WIDTH = "120px";
 var IFRAME_ID = "focus-card";
 var firstURLConnection = window.location.toString();
 var initialLoad = false;
-var port = chrome.runtime.connect({
-  name: "Focused Browsing"
-});
-port.postMessage({
-  url: firstURLConnection
-});
-port.onMessage.addListener(function (msg) {
+var port;
+
+function focusListener(msg) {
   console.log(msg);
   var status = msg.status;
   var method = msg.method;
@@ -55,10 +51,28 @@ port.onMessage.addListener(function (msg) {
       hideLinkedIn(false);
     }
   }
+}
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  console.log(sender.tab ? "from a content script:" + sender.tab.url : "from the extension"); // console.log(request)
+
+  focusListener(request);
+  sendResponse({
+    farewell: "goodbye"
+  });
+  return true;
 });
 ;
 
 (function () {
+  port = chrome.runtime.connect({
+    name: "Focused Browsing"
+  });
+  console.log(firstURLConnection);
+  port.postMessage({
+    url: firstURLConnection
+  }); // port.onMessage.addListener(focusListener)
+
   console.log("welcome to the content script");
   initIframe();
 })();

@@ -19,42 +19,51 @@ const IFRAME_ID = "focus-card"
 var firstURLConnection = window.location.toString()
 
 var initialLoad = false
-const port = chrome.runtime.connect({ name: "Focused Browsing"});
-port.postMessage({url: firstURLConnection});
+var port; 
 
-port.onMessage.addListener(function (msg) {
-    console.log(msg)
-    let status = msg.status
-    let method = msg.method
-    if (status == "focus"){
-        if(method == "removeIframe"){
-            removeIframe()
-        }else if (firstURLConnection.includes("twitter")) {
-            if(method == "initial"){
-                focusTwitter();
-            }else{
-                toggleTwitterDistractions(true);
-            }
-            startIframe();
-        } else if (firstURLConnection.includes("linkedin")){
-            console.log("about to focus on linkedin");
-            startIframe();
-            hideLinkedIn(true);
-        }
-    }else if(msg.status == "unfocus"){
-        if (firstURLConnection.includes("twitter")) {
-            console.log("about to un-focus on Twitter");
-            toggleTwitterDistractions(false);
-        } else if (firstURLConnection.includes("linkedin")) {
-            console.log("about to un-focus on linkedin");
-            hideLinkedIn(false);
-        }
-    }
-});
+function focusListener(msg) {
+  console.log(msg)
+  let status = msg.status
+  let method = msg.method
+  if (status == "focus"){
+      if(method == "removeIframe"){
+          removeIframe()
+      }else if (firstURLConnection.includes("twitter")) {
+          if(method == "initial"){
+              focusTwitter();
+          }else{
+              toggleTwitterDistractions(true);
+          }
+          startIframe();
+      } else if (firstURLConnection.includes("linkedin")){
+          console.log("about to focus on linkedin");
+          startIframe();
+          hideLinkedIn(true);
+      }
+  }else if(msg.status == "unfocus"){
+      if (firstURLConnection.includes("twitter")) {
+          console.log("about to un-focus on Twitter");
+          toggleTwitterDistractions(false);
+      } else if (firstURLConnection.includes("linkedin")) {
+          console.log("about to un-focus on linkedin");
+          hideLinkedIn(false);
+      }
+  }
+}
 
+chrome.runtime.onMessage.addListener(
+  function(request, sender, sendResponse) {
+    console.log(sender.tab ?
+                "from a content script:" + sender.tab.url :
+                "from the extension");
+    // console.log(request)
+    focusListener(request)
 
-
-
+    
+    sendResponse({farewell: "goodbye"});
+    return true
+  }
+);
 
 
 
@@ -64,6 +73,10 @@ port.onMessage.addListener(function (msg) {
 
 
 ;(function () {
+    port = chrome.runtime.connect({ name: "Focused Browsing"});
+    console.log(firstURLConnection)
+    port.postMessage({url: firstURLConnection});
+    // port.onMessage.addListener(focusListener)
     console.log("welcome to the content script")
     initIframe()
 })()
