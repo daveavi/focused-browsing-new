@@ -33,7 +33,7 @@ function focusListener(msg) {
           if(method == "initial"){
               focusTwitter();
           }else{
-              focusTwitter();
+              toggleTwitterDistractions(true);
           }
           startIframe();
       } else if (url.includes("linkedin")){
@@ -135,24 +135,33 @@ function hideLinkedIn(hide) {
   function toggleTwitterDistractions(shouldHide) {
     console.log("here we are in toggle twitter distraction")
     console.log("should hide is: " + shouldHide)
+
+
+
     try {
+
+      TWITTER_FEED_CLASS = getTwitterFeedClassName();
+      TWITTER_PANEL_CLASS = getTwitterPanelClassName();
+
+      console.log(TWITTER_FEED_CLASS)
+      console.log(TWITTER_PANEL_CLASS)
       if (shouldHide) {
         document.getElementsByClassName(
           TWITTER_FEED_CLASS
-        )[0].style.visibility = VISIBILITY_HIDDEN;
+        )[1].style.visibility = VISIBILITY_HIDDEN;
         document.getElementsByClassName(
           TWITTER_PANEL_CLASS
-        )[1].style.visibility = VISIBILITY_HIDDEN;
+        )[0].style.visibility = VISIBILITY_HIDDEN;
         injectIframe();
         areDistractionsHidden = true;
       } else {
         console.log("here is our un focus block of code")
         document.getElementsByClassName(
           TWITTER_FEED_CLASS
-        )[0].style.visibility = VISIBILITY_VISIBLE;
+        )[1].style.visibility = VISIBILITY_VISIBLE;
         document.getElementsByClassName(
           TWITTER_PANEL_CLASS
-        )[1].style.visibility = VISIBILITY_VISIBLE;
+        )[0].style.visibility = VISIBILITY_VISIBLE;
         areDistractionsHidden = false;
         removeIframe()
       }
@@ -192,42 +201,52 @@ function hideLinkedIn(hide) {
   }
   
   function homePageTwitterHasLoaded() {
-    return panelHasLoaded() && feedHasLoaded();
+
+    return getTwitterPanel() && getTwitterFeed();
   }
   
-  function panelHasLoaded() {
-    TWITTER_FEED_CLASS = getTwitterPanelClassName();
+  // function panelHasLoaded() {
+  //   TWITTER_FEED_CLASS = getTwitterPanelClassName();
     
   
-    return TWITTER_FEED_CLASS;
-  }
+  //   return TWITTER_FEED_CLASS;
+  // }
   
-  function feedHasLoaded() {
-    TWITTER_PANEL_CLASS = getTwitterFeedClassName();
-    return TWITTER_PANEL_CLASS;
-  }
+  // function feedHasLoaded() {
+  //   TWITTER_PANEL_CLASS = getTwitterFeedClassName();
+  //   return TWITTER_PANEL_CLASS;
+  // }
   
-  function getTwitterFeedClassName() {
-    let feed = document.querySelectorAll('[role="main"]')[0].children[0].children[0]
+
+  function getTwitterFeed(){
+    return document.querySelectorAll('[role="main"]')[0].children[0].children[0]
     .children[0].children[0].children[0].children[3]
-  
+  }
+
+  function getTwitterPanel(){
+    return document.querySelectorAll('[role="main"]')[0].children[0].children[0]
+    .children[0].children[1].children[0].children[1].children[0].children[0]
+    .children[0].children[2]
+  }
+
+  function getTwitterFeedClassName() {
+    let feed = getTwitterFeed()
+    console.log(feed)
     if(feed != null){
       return feed.className
     }else{
-      return false
+      throw 'feed class name not found!';
     }
   
   }
   
   function getTwitterPanelClassName() {
-    let panel = document.querySelectorAll('[role="main"]')[0].children[0].children[0]
-    .children[0].children[1].children[0].children[1].children[0].children[0]
-    .children[0].children[2]
-  
+    let panel = getTwitterPanel()
+    console.log(panel)
     if(panel != null){
       return panel.className
     }else{
-      return false
+      throw 'panel class name not found!';
     }
   }
 
