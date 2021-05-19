@@ -37,14 +37,13 @@ chrome.runtime.onConnect.addListener(function (connectionPort) {
       console.log("here about to initalize linkedIn");
     }
   });
-}); // chrome.tabs.onActivated.addListener(function(activeInfo, tab) {
-//   chrome.tabs.getSelected(null,function(tab) {
-//     activeURL = tab.url;
-//     console.log("activeURL is: "+ activeURL)
-//   });
-// });
-
-chrome.commands.onCommand.addListener(toggleFocusListener);
+});
+chrome.tabs.onActivated.addListener(function (activeInfo, tab) {
+  chrome.tabs.getSelected(null, function (tab) {
+    activeURL = tab.url;
+    console.log("activeURL is: " + activeURL);
+  });
+});
 
 function toggleFocusListener(command, tab) {
   console.log(command);
@@ -56,30 +55,9 @@ function toggleFocusListener(command, tab) {
     console.log("sending message to linkedin");
     toggleFocus("linkedin");
   }
-} // function tabMonitor(){
-//   if(currentURL.includes("twitter.com")){
-//       if(focusMode["twitter"].focus){
-//         if (currentURL === "https://twitter.com/home") {
-//           console.log("listener is listening to twitter page")
-//           sendStatus("twitter","focus", "tab")
-//         }else{
-//           console.log("sending removeIframe")
-//           sendStatus("twitter","focus","removeIframe")
-//         }
-//       }
-//   } else if(currentURL.includes("linkedin.com")) {
-//     if(focusMode["linkedin"].focus){
-//       if (currentURL === "https://www.linkedin.com/feed/") {
-//         console.log("listener is listening to linkedin page")
-//         sendStatus("linkedin","focus", "tab")
-//       }else{
-//         sendStatus("linkedin","focus","removeIframe")
-//       }
-//     }
-//   }
-// }
+}
 
-
+chrome.commands.onCommand.addListener(toggleFocusListener);
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   console.log(sender.tab ? "from a content script:" + sender.tab.url : "from the extension");
   var webPage = activeURL.includes("twitter.com") ? "twitter" : "linkedin";
@@ -114,7 +92,9 @@ function sendStatus(webPage, status, method) {
       active: true,
       currentWindow: true
     }, function (tabs) {
+      var url = tabs[0].url;
       chrome.tabs.sendMessage(tabs[0].id, {
+        "url": url,
         "status": status,
         "method": method
       }, function (response) {

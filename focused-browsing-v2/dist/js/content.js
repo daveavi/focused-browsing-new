@@ -25,28 +25,29 @@ function focusListener(msg) {
   console.log(msg);
   var status = msg.status;
   var method = msg.method;
+  var url = msg.url;
 
   if (status == "focus") {
     if (method == "removeIframe") {
       removeIframe();
-    } else if (firstURLConnection.includes("twitter")) {
+    } else if (url.includes("twitter")) {
       if (method == "initial") {
         focusTwitter();
       } else {
-        toggleTwitterDistractions(true);
+        focusTwitter();
       }
 
       startIframe();
-    } else if (firstURLConnection.includes("linkedin")) {
+    } else if (url.includes("linkedin")) {
       console.log("about to focus on linkedin");
       startIframe();
       hideLinkedIn(true);
     }
   } else if (msg.status == "unfocus") {
-    if (firstURLConnection.includes("twitter")) {
+    if (url.includes("twitter")) {
       console.log("about to un-focus on Twitter");
       toggleTwitterDistractions(false);
-    } else if (firstURLConnection.includes("linkedin")) {
+    } else if (url.includes("linkedin")) {
       console.log("about to un-focus on linkedin");
       hideLinkedIn(false);
     }
