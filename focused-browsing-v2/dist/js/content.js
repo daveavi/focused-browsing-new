@@ -30,6 +30,7 @@ function focusListener(msg) {
   if (status == "focus") {
     if (method == "removeIframe") {
       removeIframe();
+      areDistractionsHidden = false;
     } else if (url.includes("twitter")) {
       if (method == "initial") {
         focusTwitter();
@@ -103,7 +104,11 @@ function injectIframe() {
 }
 
 function removeIframe() {
-  document.getElementById(IFRAME_ID).remove();
+  try {
+    document.getElementById(IFRAME_ID).remove();
+  } catch (err) {
+    console.log("the iframe is not on the screen");
+  }
 }
 
 function hideLinkedIn(hide) {

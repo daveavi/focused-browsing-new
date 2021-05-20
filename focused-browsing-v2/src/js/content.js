@@ -29,6 +29,7 @@ function focusListener(msg) {
   if (status == "focus"){
       if(method == "removeIframe"){
           removeIframe()
+          areDistractionsHidden = false;
       }else if (url.includes("twitter")) {
           if(method == "initial"){
               focusTwitter();
@@ -72,7 +73,7 @@ chrome.runtime.onMessage.addListener(
 
 
 ;(function () {
-    port = chrome.runtime.connect({ name: "Focused Browsing"});
+    port = chrome.runtime.connect({name: "Focused Browsing"});
     console.log(firstURLConnection)
     port.postMessage({url: firstURLConnection});
     // port.onMessage.addListener(focusListener)
@@ -106,7 +107,12 @@ function injectIframe() {
 }
 
 function removeIframe(){
+  try{
     document.getElementById(IFRAME_ID).remove()
+  }catch(err){
+    console.log("the iframe is not on the screen")
+  }
+   
 }
 
 
