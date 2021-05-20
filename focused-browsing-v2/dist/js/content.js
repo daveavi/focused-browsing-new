@@ -188,15 +188,7 @@ function focusTwitter() {
 
 function homePageTwitterHasLoaded() {
   return getTwitterPanel() && getTwitterFeed();
-} // function panelHasLoaded() {
-//   TWITTER_FEED_CLASS = getTwitterPanelClassName();
-//   return TWITTER_FEED_CLASS;
-// }
-// function feedHasLoaded() {
-//   TWITTER_PANEL_CLASS = getTwitterFeedClassName();
-//   return TWITTER_PANEL_CLASS;
-// }
-
+}
 
 function getTwitterFeed() {
   return document.querySelectorAll('[role="main"]')[0].children[0].children[0].children[0].children[0].children[0].children[3];
