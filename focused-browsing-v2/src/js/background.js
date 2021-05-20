@@ -81,7 +81,6 @@ function toggleFocusListener(command,tab) {
     }
   });
 }
-
 chrome.commands.onCommand.addListener(toggleFocusListener);
 
 
