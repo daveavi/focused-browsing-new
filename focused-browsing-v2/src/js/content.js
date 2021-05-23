@@ -1,7 +1,7 @@
 var TWITTER_FEED_CLASS = "";
 var TWITTER_PANEL_CLASS = "";
 
-const FEED_CONTAINER_CLASS_NAME = "section[aria-labelledby^=accessible-list]";
+const FEED_CONTAINER_CLASS_NAME = "section[aria-labelledby^=accessible-list]"
 const NEWS_FEED_CLASSNAME = "core-rail";
 const SHARED_NEWS_CLASSNAME = "ad-banner-container artdeco-card ember-view";
 const MAIN_CONTAINER_CLASSNAME = "neptune-grid three-column ghost-animate-in";
@@ -102,7 +102,13 @@ function injectIframe() {
         border: "none",
         zIndex: "10000",
     });
-    document.body.prepend(appIframe);
+    // document.body.prepend(appIframe);
+    document.querySelectorAll(FEED_CONTAINER_CLASS_NAME)[0].prepend(appIframe)  
+    console.log(document.querySelector('[aria-label="Timeline: Your Home Timeline"]'))
+    // document.querySelector('[aria-label="Timeline: Your Home Timeline"]').prepend(appIframe)
+    // document.getElementsByClassName(
+    //   TWITTER_FEED_CLASS
+    // )[1].append(appIframe)
     console.log(appIframe);
 }
 

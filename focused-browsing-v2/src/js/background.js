@@ -28,8 +28,18 @@ chrome.runtime.onConnect.addListener(function (connectionPort) {
 
 chrome.tabs.onActivated.addListener(function(activeInfo, tab) {
   chrome.tabs.getSelected(null,function(tab) {
-    activeURL = tab.url;
-    console.log("activeURL is: "+ activeURL)
+    let url = tab.url;
+    if(url){
+      if(url.includes("twitter.com") && focusMode["twitter"].focus){
+        console.log("new tab url is: "+ url)
+        if(isURLTwitterHome(url)){
+          sendStatus("twitter","focus","tab")
+        }else{
+          sendStatus("twitter", "focus", "removeIframe")
+        }
+      }
+    }
+    
   });
 });
 
@@ -137,6 +147,7 @@ function sendStatus(webPage,status,method){
       let url = tabs[0].url
       let tabID = tabs[0].id
       let port = ports[tabID]
+      console.log(port)
       let focusObject = {"url":url,"status":status, "method": method}
       port.postMessage(focusObject)
     });
