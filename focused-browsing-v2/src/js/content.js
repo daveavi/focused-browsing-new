@@ -53,17 +53,17 @@ function focusListener(msg) {
   }
 }
 
-chrome.runtime.onMessage.addListener(
-  function(request, sender, sendResponse) {
-    console.log(sender.tab ?
-                "from a content script:" + sender.tab.url :
-                "from the extension");
-    // console.log(request)
-    focusListener(request)
-    sendResponse({farewell: "goodbye"});
-    return true
-  }
-);
+// chrome.runtime.onMessage.addListener(
+//   function(request, sender, sendResponse) {
+//     console.log(sender.tab ?
+//                 "from a content script:" + sender.tab.url :
+//                 "from the extension");
+//     // console.log(request)
+//     focusListener(request)
+//     sendResponse({farewell: "goodbye"});
+//     return true
+//   }
+// );
 
 
 
@@ -76,7 +76,7 @@ chrome.runtime.onMessage.addListener(
     port = chrome.runtime.connect({name: "Focused Browsing"});
     console.log(firstURLConnection)
     port.postMessage({url: firstURLConnection});
-    // port.onMessage.addListener(focusListener)
+    port.onMessage.addListener(focusListener)
     console.log("welcome to the content script")
     initIframe()
 })()

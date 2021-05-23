@@ -1,12 +1,13 @@
-var focusMode = {"twitter": {"focus": true, "initialized": false}, "linkedin":{"focus": true, "initialized": false} };
+var focusMode = {"twitter": {"focus": true}, "linkedin":{"focus": true}};
 
 var activeURL;
-var linkedinport;
-
+var ports = []
 
 chrome.runtime.onConnect.addListener(function (connectionPort) {
     console.assert(connectionPort.name == "Focused Browsing");
-    port = connectionPort;
+
+    ports[connectionPort.sender.tab.id] = connectionPort
+    port = connectionPort
     console.log(connectionPort)
 
     port.onMessage.addListener(function (msg) {
@@ -25,17 +26,18 @@ chrome.runtime.onConnect.addListener(function (connectionPort) {
 });
 
 
-// chrome.tabs.onActivated.addListener(function(activeInfo, tab) {
-//   chrome.tabs.getSelected(null,function(tab) {
-//     activeURL = tab.url;
-//     console.log("activeURL is: "+ activeURL)
-//   });
-// });
+chrome.tabs.onActivated.addListener(function(activeInfo, tab) {
+  chrome.tabs.getSelected(null,function(tab) {
+    activeURL = tab.url;
+    console.log("activeURL is: "+ activeURL)
+  });
+});
 
 
 function tabListener(tabId, changeInfo, tab){
   let url = tab.url
-
+  console.log(url)
+  console.log(activeURL)
   if(changeInfo && changeInfo.status === "complete" && url != activeURL){
     if(url.includes("twitter.com")){
         if(focusMode["twitter"].focus){
@@ -133,9 +135,10 @@ function sendStatus(webPage,status,method){
 
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
       let url = tabs[0].url
-      chrome.tabs.sendMessage(tabs[0].id, {"url":url,"status":status, "method": method}, function(response) {
-        console.log(response.farewell);
-      });
+      let tabID = tabs[0].id
+      let port = ports[tabID]
+      let focusObject = {"url":url,"status":status, "method": method}
+      port.postMessage(focusObject)
     });
 
   }catch(err){
@@ -147,15 +150,10 @@ function sendStatus(webPage,status,method){
   
   
 function initializeFocus(webPage){
-    var initializeFocus = !focusMode[webPage].initialized || focusMode[webPage].focus
+    var initializeFocus = focusMode[webPage].focus
     if(initializeFocus){
       console.log("initializing focus")
       sendStatus(webPage,"focus","initial")
-      console.log(focusMode)
-    }
-  
-    if (!focusMode[webPage].initialized){
-      focusMode[webPage].initialized = !focusMode[webPage].initialized
       console.log(focusMode)
     }
 }
