@@ -21,6 +21,9 @@ var firstURLConnection = window.location.toString()
 var initialLoad = false
 var port; 
 
+var TWITTER_FEED_PARENT;
+var TWITTER_FEED_CHILD; 
+
 function focusListener(msg) {
   console.log(msg)
   let status = msg.status
@@ -103,13 +106,16 @@ function injectIframe() {
         zIndex: "10000",
     });
     // document.body.prepend(appIframe);
-    document.querySelectorAll(FEED_CONTAINER_CLASS_NAME)[0].prepend(appIframe)  
-    console.log(document.querySelector('[aria-label="Timeline: Your Home Timeline"]'))
+    // const childElementIndex = getChildIndexOfFeedContainer();
+    console.log("before we inject iframe here is the feed parent")
+    console.log(TWITTER_FEED_PARENT)
+    // document.querySelectorAll(FEED_CONTAINER_CLASS_NAME)[2].prepend(appIframe)
+    // console.log(document.querySelector('[aria-label="Timeline: Your Home Timeline"]'))
     // document.querySelector('[aria-label="Timeline: Your Home Timeline"]').prepend(appIframe)
     // document.getElementsByClassName(
     //   TWITTER_FEED_CLASS
     // )[1].append(appIframe)
-    console.log(appIframe);
+    // console.log(appIframe);
 }
 
 function removeIframe(){
@@ -157,23 +163,22 @@ function hideLinkedIn(hide) {
 
       console.log(TWITTER_FEED_CLASS)
       console.log(TWITTER_PANEL_CLASS)
+
       if (shouldHide) {
-        document.getElementsByClassName(
-          TWITTER_FEED_CLASS
-        )[1].style.visibility = VISIBILITY_HIDDEN;
-        document.getElementsByClassName(
-          TWITTER_PANEL_CLASS
-        )[0].style.visibility = VISIBILITY_HIDDEN;
+        // document.getElementsByClassName(
+        //   TWITTER_FEED_CLASS
+        // )[1].style.visibility = VISIBILITY_HIDDEN;
+        hideTwitterFeed(true)
+        hideTwitterPanel(true)
         injectIframe();
         areDistractionsHidden = true;
       } else {
         console.log("here is our un focus block of code")
-        document.getElementsByClassName(
-          TWITTER_FEED_CLASS
-        )[1].style.visibility = VISIBILITY_VISIBLE;
-        document.getElementsByClassName(
-          TWITTER_PANEL_CLASS
-        )[0].style.visibility = VISIBILITY_VISIBLE;
+        // document.getElementsByClassName(
+        //   TWITTER_FEED_CLASS
+        // )[1].style.visibility = VISIBILITY_VISIBLE;
+        hideTwitterFeed(false)
+        hideTwitterPanel(false)
         areDistractionsHidden = false;
         removeIframe()
       }
@@ -211,6 +216,57 @@ function hideLinkedIn(hide) {
       intervalId = setInterval(tryBlockingTwitterHome, 100);
     }
   }
+
+
+
+
+function hideTwitterFeed(shouldhide){
+  if(shouldhide){
+    TWITTER_FEED_PARENT = document.getElementsByClassName(
+      TWITTER_FEED_CLASS
+    )[1]
+
+    TWITTER_FEED_CHILD = document.getElementsByClassName(
+      TWITTER_FEED_CLASS
+    )[1].children[0]
+    TWITTER_FEED_PARENT.removeChild(TWITTER_FEED_PARENT.childNodes[0])
+    console.log(TWITTER_FEED_CHILD)
+  }else{
+    console.log(TWITTER_FEED_CHILD)
+    TWITTER_FEED_PARENT.append(TWITTER_FEED_CHILD)
+
+  }
+}
+
+function hideTwitterPanel(shouldHide){
+  if(shouldHide){
+    document.getElementsByClassName(
+      TWITTER_PANEL_CLASS
+    )[0].style.visibility = VISIBILITY_HIDDEN;
+    document.getElementsByClassName(
+      TWITTER_PANEL_CLASS
+    )[2].style.visibility = VISIBILITY_HIDDEN;
+
+    console.log(document.getElementsByClassName(
+      TWITTER_PANEL_CLASS
+    )[0])
+
+    console.log(document.getElementsByClassName(
+      TWITTER_PANEL_CLASS
+    )[2])
+
+  }else{
+    document.getElementsByClassName(
+      TWITTER_PANEL_CLASS
+    )[0].style.visibility = VISIBILITY_VISIBLE;
+    document.getElementsByClassName(
+      TWITTER_PANEL_CLASS
+    )[1].style.visibility = VISIBILITY_VISIBLE;
+  }
+}
+
+
+
   
   function homePageTwitterHasLoaded() {
     return getTwitterPanel() && getTwitterFeed();
@@ -220,6 +276,8 @@ function hideLinkedIn(hide) {
   function getTwitterFeed(){
     return document.querySelectorAll('[role="main"]')[0].children[0].children[0]
     .children[0].children[0].children[0].children[3]
+
+    
   }
 
   function getTwitterPanel(){
@@ -248,5 +306,17 @@ function hideLinkedIn(hide) {
       throw 'panel class name not found!';
     }
   }
+
+
+//   function getChildIndexOfFeedContainer(){
+//     var childElementIndex = 0;
+//     if(document.querySelectorAll(FEED_CONTAINER_CLASS_NAME)[childElementIndex].innerText.includes("Messages")){
+//         childElementIndex = 1
+//     }else{
+//         childElementIndex = 0
+//     }
+
+//     return childElementIndex
+// }
 
 
