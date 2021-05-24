@@ -21,8 +21,9 @@ var firstURLConnection = window.location.toString()
 var initialLoad = false
 var port; 
 
-var TWITTER_FEED_PARENT;
-var TWITTER_FEED_CHILD; 
+var TWITTER_FEED_PARENT_NODE;
+var TWITTER_FEED_CHILD_NODE; 
+var TOPICS_TO_FOLLOW = null;
 
 function focusListener(msg) {
   console.log(msg)
@@ -105,19 +106,8 @@ function injectIframe() {
         border: "none",
         zIndex: "10000",
     });
-    // document.body.prepend(appIframe);
-    // const childElementIndex = getChildIndexOfFeedContainer();
-    console.log("before we inject iframe here is the feed parent")
-    console.log(TWITTER_FEED_PARENT)
-
-    TWITTER_FEED_PARENT.append(appIframe)
-    // document.querySelectorAll(FEED_CONTAINER_CLASS_NAME)[2].prepend(appIframe)
-    // console.log(document.querySelector('[aria-label="Timeline: Your Home Timeline"]'))
-    // document.querySelector('[aria-label="Timeline: Your Home Timeline"]').prepend(appIframe)
-    // document.getElementsByClassName(
-    //   TWITTER_FEED_CLASS
-    // )[1].append(appIframe)
-    // console.log(appIframe);
+    
+    TWITTER_FEED_PARENT_NODE.append(appIframe)
 }
 
 function removeIframe(){
@@ -172,7 +162,7 @@ function hideLinkedIn(hide) {
         // )[1].style.visibility = VISIBILITY_HIDDEN;
         hideTwitterFeed(true)
         hideTwitterPanel(true)
-        // hideTopicsToFollow(true)
+        hideTopicsToFollow(true)
         injectIframe();
         areDistractionsHidden = true;
       } else {
@@ -182,7 +172,7 @@ function hideLinkedIn(hide) {
         // )[1].style.visibility = VISIBILITY_VISIBLE;
         hideTwitterFeed(false)
         hideTwitterPanel(false)
-        // hideTopicsToFollow(false)
+        hideTopicsToFollow(false)
         areDistractionsHidden = false;
         removeIframe()
       }
@@ -198,6 +188,7 @@ function hideLinkedIn(hide) {
       console.log("we can clear the interval")
       console.log(intervalId)
       clearInterval(intervalId);
+      initialLoad = false;
       return
     } else {
       try {
@@ -215,7 +206,6 @@ function hideLinkedIn(hide) {
     console.log("setting interval to block twitter")
     if (initialLoad) {
       intervalId = setInterval(tryBlockingTwitterHome, 1000);
-      initialLoad = false;
     } else {
       intervalId = setInterval(tryBlockingTwitterHome, 100);
     }
@@ -226,18 +216,18 @@ function hideLinkedIn(hide) {
 
 function hideTwitterFeed(shouldhide){
   if(shouldhide){
-    TWITTER_FEED_PARENT = document.getElementsByClassName(
+    TWITTER_FEED_PARENT_NODE = document.getElementsByClassName(
       TWITTER_FEED_CLASS
     )[1]
 
     TWITTER_FEED_CHILD = document.getElementsByClassName(
       TWITTER_FEED_CLASS
     )[1].children[0]
-    TWITTER_FEED_PARENT.removeChild(TWITTER_FEED_PARENT.childNodes[0])
+    TWITTER_FEED_PARENT_NODE.removeChild(TWITTER_FEED_PARENT_NODE.childNodes[0])
     console.log(TWITTER_FEED_CHILD)
   }else{
     console.log(TWITTER_FEED_CHILD)
-    TWITTER_FEED_PARENT.append(TWITTER_FEED_CHILD)
+    TWITTER_FEED_PARENT_NODE.append(TWITTER_FEED_CHILD)
 
   }
 }
@@ -258,22 +248,14 @@ function hideTwitterPanel(shouldHide){
 }
 
 function hideTopicsToFollow(shouldHide){
-  if(shouldHide){
-    console.log("hiding topics to follow")
-    console.log( document.querySelectorAll('[role="main"]')[0].children[0].children[0]
-    .children[0].children[1].children[0].children[1].children[0].children[0]
-    .children[0].children[3])
 
-    document.querySelectorAll('[role="main"]')[0].children[0].children[0]
-      .children[0].children[1].children[0].children[1].children[0].children[0]
-      .children[0].children[3].style.visibility = VISIBILITY_HIDDEN;
+  if(shouldHide){   
+    if(!TOPICS_TO_FOLLOW){
+      TOPICS_TO_FOLLOW = getTwitterTopicsToFollow()
+    }
+    TOPICS_TO_FOLLOW.style.visibility = VISIBILITY_HIDDEN
   }else{
-    console.log( document.querySelectorAll('[role="main"]')[0].children[0].children[0]
-    .children[0].children[1].children[0].children[1].children[0].children[0]
-    .children[0].children[3])
-    document.querySelectorAll('[role="main"]')[0].children[0].children[0]
-      .children[0].children[1].children[0].children[1].children[0].children[0]
-      .children[0].children[3].style.visibility = VISIBILITY_VISIBLE;
+    TOPICS_TO_FOLLOW.style.visibility = VISIBILITY_VISIBLE
   }
 }
 
@@ -299,9 +281,18 @@ function hideTopicsToFollow(shouldHide){
   }
 
   function getTwitterTopicsToFollow(){
+    let topics_to_follow_index = 3
+    if(!initialLoad){
+      console.log("here")
+      topics_to_follow_index = 4
+    }
+    console.log(document.querySelectorAll('[role="main"]')[0].children[0].children[0]
+    .children[0].children[1].children[0].children[1].children[0].children[0]
+    .children[0].children[topics_to_follow_index])
+
     return document.querySelectorAll('[role="main"]')[0].children[0].children[0]
     .children[0].children[1].children[0].children[1].children[0].children[0]
-    .children[0].children[3]
+    .children[0].children[topics_to_follow_index]
   }
 
   function getTwitterFeedClassName() {
