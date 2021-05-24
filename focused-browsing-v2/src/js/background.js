@@ -5,24 +5,28 @@ var ports = []
 
 chrome.runtime.onConnect.addListener(function (connectionPort) {
     console.assert(connectionPort.name == "Focused Browsing");
+    let tab_info = connectionPort.sender.tab
+    ports[tab_info.id] = connectionPort
 
-    ports[connectionPort.sender.tab.id] = connectionPort
-    port = connectionPort
-    console.log(connectionPort)
+    // console.log("established port")
+    // console.log(tab_info.id)
 
-    port.onMessage.addListener(function (msg) {
-      console.log("here")
-      console.log(msg)
-      activeURL = msg.url
-      if (isURLTwitterHome(activeURL)) {
-          console.log("here about to initalize twitter")
-          initializeFocus("twitter")
+
+    
+
+    // port.onMessage.addListener(function (msg) {
+    //   console.log("here")
+    //   console.log(msg)
+    //   activeURL = msg.url
+    //   if (isURLTwitterHome(activeURL)) {
+    //       console.log("here about to initalize twitter")
+    //       initializeFocus("twitter")
           
-      } else if (activeURL === "https://www.linkedin.com/feed/") {
-          initializeFocus("linkedin")
-          console.log("here about to initalize linkedIn")
-      }
-    });    
+    //   } else if (activeURL === "https://www.linkedin.com/feed/") {
+    //       initializeFocus("linkedin")
+    //       console.log("here about to initalize linkedIn")
+    //   }
+    // });    
 });
 
 
@@ -34,8 +38,6 @@ chrome.tabs.onActivated.addListener(function(activeInfo, tab) {
         console.log("new tab url is: "+ url)
         if(isURLTwitterHome(url)){
           sendStatus("twitter","focus","tab")
-        }else{
-          sendStatus("twitter", "focus", "removeIframe")
         }
       }
     }
@@ -46,17 +48,17 @@ chrome.tabs.onActivated.addListener(function(activeInfo, tab) {
 
 function tabListener(tabId, changeInfo, tab){
   let url = tab.url
-  console.log(url)
-  console.log(activeURL)
-  if(changeInfo && changeInfo.status === "complete" && url != activeURL){
+  // console.log(url)
+  // console.log(activeURL)
+  if(changeInfo && changeInfo.status === "complete"){
     if(url.includes("twitter.com")){
+      console.log(url)
+      console.log(activeURL)
         if(focusMode["twitter"].focus){
-          if (isURLTwitterHome(url) & !(isURLTwitterHome(activeURL))) {
-            console.log(url)
-            console.log(activeURL)
+          if (isURLTwitterHome(url)){
             sendStatus("twitter","focus","initial")
-          }else {
-            sendStatus("twitter","focus","removeIframe")
+          }else{
+            
           } 
           activeURL = url
         }
@@ -66,6 +68,7 @@ function tabListener(tabId, changeInfo, tab){
         }
     }
   }
+
 }
 
 chrome.tabs.onUpdated.addListener(tabListener);
@@ -74,7 +77,7 @@ chrome.tabs.onUpdated.addListener(tabListener);
 
 
 function isURLTwitterHome(url){
-  return url === "https://twitter.com/home" || url === "https://twitter.com/"
+  return url === "https://twitter.com/home" 
 }
 
 
@@ -146,8 +149,17 @@ function sendStatus(webPage,status,method){
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
       let url = tabs[0].url
       let tabID = tabs[0].id
-      let port = ports[tabID]
-      console.log(port)
+      console.log("sending message to this ID")
+      console.log(tabID)
+
+
+      let port = getPortByID(tabID)
+      // // if 
+      // setTimeout(function(){
+      //   let port = getPortByID(tabID)
+      // }, 500)
+
+      // // console.log(port)
       let focusObject = {"url":url,"status":status, "method": method}
       port.postMessage(focusObject)
     });
@@ -155,6 +167,12 @@ function sendStatus(webPage,status,method){
   }catch(err){
     console.log("background script hasn't initialized port")
   }
+}
+
+
+
+function getPortByID(tabID){
+  return ports[tabID]
 }
   
 
