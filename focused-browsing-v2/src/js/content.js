@@ -32,7 +32,7 @@ function focusListener(msg) {
   let url = msg.url
   if (status == "focus"){
       if(method == "removeIframe"){
-          removeIframe()
+          // removeIframe()
           areDistractionsHidden = false;
       }else if (url.includes("twitter")) {
           if(method == "initial"){
@@ -56,25 +56,6 @@ function focusListener(msg) {
       }
   }
 }
-
-// chrome.runtime.onMessage.addListener(
-//   function(request, sender, sendResponse) {
-//     console.log(sender.tab ?
-//                 "from a content script:" + sender.tab.url :
-//                 "from the extension");
-//     // console.log(request)
-//     focusListener(request)
-//     sendResponse({farewell: "goodbye"});
-//     return true
-//   }
-// );
-
-
-
-
-
-
-
 
 ;(function () {
     port = chrome.runtime.connect({name: "Focused Browsing"});
