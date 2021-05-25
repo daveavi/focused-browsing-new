@@ -18,7 +18,7 @@ const DEFAULT_FRAME_WIDTH = "120px";
 const IFRAME_ID = "focus-card"
 var firstURLConnection = window.location.toString()
 
-var initialLoad = false
+var initialLoad = true
 var port; 
 
 var TWITTER_FEED_PARENT_NODE;
@@ -27,9 +27,6 @@ var TOPICS_TO_FOLLOW = null;
 
 var PANEL_ELEMENTS = [] 
 
-  
-var homePageTwitterHidden = false;
-var panelPageTwitterHidden = false
 
 function focusListener(msg) {
   console.log(msg)
@@ -40,7 +37,6 @@ function focusListener(msg) {
      if (url.includes("twitter")) {
           if(method == "initial"){
               focusTwitter();
-              panelPageTwitterHidden = false;
           }else if(method == "hidePanels"){
               PANEL_ELEMENTS = [] 
               focusTwitterPanel();
@@ -66,24 +62,21 @@ function focusListener(msg) {
   }
 }
 
+
 ;(function () {
     port = chrome.runtime.connect({name: "Focused Browsing"});
     console.log(firstURLConnection)
     port.postMessage({url: firstURLConnection});
     port.onMessage.addListener(focusListener)
-    console.log("welcome to the content script")
     initIframe()
 })()
 
 function initIframe() {
     appIframe = document.createElement("iframe");
-    console.log(appIframe);
-    //I am appending it to the body just to test it out for now, to see if the code is being rendered on focus right away
 }
 
 function startIframe() {
     appIframe.src = chrome.runtime.getURL("www/card.html");
-    console.log(appIframe);
 }
 
 function injectIframe() {
@@ -131,25 +124,18 @@ function hideLinkedIn(hide) {
     }
   }
   
-var homePageTwitterHidden = false;
 function toggleTwitterDistractions(shouldHide) {
   console.log("here we are in toggle twitter distraction")
   console.log("should hide is: " + shouldHide)
-
-
-
   try {
-
     TWITTER_FEED_CLASS = getTwitterFeedClassName();
     if (shouldHide) {
       hideTwitterFeed(true)
       hideTwitterPanel(true)
       injectIframe();
-      homePageTwitterHidden = true;
     } else {
       hideTwitterFeed(false)
       hideTwitterPanel(false)
-      homePageTwitterHidden = false;
       removeIframe()
     }
   } catch (err) {
@@ -157,17 +143,17 @@ function toggleTwitterDistractions(shouldHide) {
   }
 }
   
-var intervalId;
-var panelPageTwitterHidden = false
+var feedIntervalId;
 function tryBlockingTwitterHome() {
   console.log("we are trying to block twitter home")
-  if (homePageTwitterHidden) {
+  if (distractionsHidden("home")) {
     console.log("we can clear the interval")
-    console.log(intervalId)
-    clearInterval(intervalId);
+    console.log(feedIntervalId)
+    clearInterval(feedIntervalId);
     initialLoad = false;
     return
   } else {
+    console.log("distractions are not hidden")
     try {
       if (homePageTwitterHasLoaded()) {
           console.log("here in blocking twitter")
@@ -181,9 +167,9 @@ function tryBlockingTwitterHome() {
 
 function tryBlockingTwitterPanel() {
   console.log("we are trying to block twitter panel")
-  if (panelPageTwitterHidden) {
+  if (distractionsHidden("panel")) {
     console.log("we can clear the interval")
-    console.log(intervalId)
+    console.log(pageInterval)
     clearInterval(pageInterval);
     return
   } else {
@@ -191,11 +177,9 @@ function tryBlockingTwitterPanel() {
       if (hasTwitterPanelLoaded()) {
           console.log("here in blocking twitter panel")
           hideTwitterPanel(true);
-          panelPageTwitterHidden= true
       }
     } catch (err) {
-      console.log(err)
-      // console.log("Panel hasn't been loaded yet");
+      console.log("Panel hasn't been loaded yet");
     }
   }
 }
@@ -204,16 +188,18 @@ function focusTwitter() {
   console.log("setting interval to block twitter")
   if (initialLoad) {
     console.log("1000 interval")
-    intervalId = setInterval(tryBlockingTwitterHome, 1000);
+    feedIntervalId = setInterval(tryBlockingTwitterHome, 500);
+    initialLoad = !initialLoad
   } else {
-    intervalId = setInterval(tryBlockingTwitterHome, 100);
+    console.log("100 interval")
+    feedIntervalId = setInterval(tryBlockingTwitterHome, 100);
   }
 }
 
 
 var pageInterval;
 function focusTwitterPanel(){
-  pageInterval = setInterval(tryBlockingTwitterPanel, 200);
+  pageInterval = setInterval(tryBlockingTwitterPanel, 500);
 }
 
 
@@ -258,6 +244,23 @@ function hideTwitterPanel(shouldHide){
 }
 
 
+
+
+
+
+function distractionsHidden(isHomePage) {
+  try{
+    let PANEL = getTwitterPanel()
+    if (isHomePage == "home") {
+          let FEED = getTwitterFeed()
+          return FEED.children[0].nodeName == "IFRAME" && PANEL.children.length == 1;
+    } else {
+          return PANEL.children.length == 1
+    }
+  }catch(err){
+    console.log(err)
+  }
+}
 
 
   
