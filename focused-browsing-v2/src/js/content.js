@@ -145,9 +145,7 @@ function hideLinkedIn(hide) {
         //   TWITTER_FEED_CLASS
         // )[1].style.visibility = VISIBILITY_HIDDEN;
         hideTwitterFeed(true)
-        // setTimeOut(hideTwitterPanel(true), 200)
         hideTwitterPanel(true)
-        // hideTopicsToFollow(true)
         injectIframe();
         areDistractionsHidden = true;
       } else {
@@ -157,7 +155,6 @@ function hideLinkedIn(hide) {
         // )[1].style.visibility = VISIBILITY_VISIBLE;
         hideTwitterFeed(false)
         hideTwitterPanel(false)
-        hideTopicsToFollow(false)
         areDistractionsHidden = false;
         removeIframe()
       }
@@ -211,6 +208,7 @@ function hideTwitterFeed(shouldhide){
     TWITTER_FEED_PARENT_NODE.removeChild(TWITTER_FEED_PARENT_NODE.childNodes[0])
     console.log(TWITTER_FEED_CHILD)
   }else{
+    console.log("APPENDING TWITTER_FEED_CHILD")
     console.log(TWITTER_FEED_CHILD)
     TWITTER_FEED_PARENT_NODE.append(TWITTER_FEED_CHILD)
 
@@ -219,31 +217,31 @@ function hideTwitterFeed(shouldhide){
 
 var firstHide = true
 function hideTwitterPanel(shouldHide){
-  if(shouldHide){
-    // document.getElementsByClassName(
-    //   TWITTER_PANEL_CLASS
-    // )[0].style.visibility = VISIBILITY_HIDDEN;
-    let PANEL = getTwitterPanel()
 
+  let PANEL = getTwitterPanel()
+  console.log("PANEL IS")
+  console.log(PANEL)
+  if(shouldHide){
     console.log("here are the panels children")
     console.log(PANEL.children)
     console.log(PANEL.children.length)
-
-    // for(let i=1; i<PANEL.children.length; i++){
-    //   // PANEL_ELEMENTS.append(PANEL[i])
-    //   console.log("i is: "+ i)
-    //   console.log(PANEL.children[i])
-    //   PANEL.removeChild(PANEL.children[i])
-    // }
-    // console.log(PANEL.children)
-
-    i = 4
+    let i = 4
     while (PANEL.children.length > 1) {
+      var nodeChild = PANEL.children[i].cloneNode(true)
+      PANEL_ELEMENTS.push(nodeChild)
       PANEL.removeChild(PANEL.children[i])
       i-=1
     }
-    
+    console.log(PANEL_ELEMENTS)
   }else{
+    let i = 3
+    console.log(PANEL.children)
+    while(i >= 0){
+      console.log("first element is")
+      console.log(PANEL_ELEMENTS[i])
+      PANEL.append(PANEL_ELEMENTS[i])
+      i-=1
+    }
     // document.getElementsByClassName(
     //   TWITTER_PANEL_CLASS
     // )[0].style.visibility = VISIBILITY_VISIBLE;
@@ -251,93 +249,68 @@ function hideTwitterPanel(shouldHide){
   }
 }
 
-function hideTopicsToFollow(shouldHide){
-
-  // if(shouldHide){   
-  //   if(!TOPICS_TO_FOLLOW){
-  //     TOPICS_TO_FOLLOW = getTwitterTopicsToFollow()
-  //   }
-  //   TOPICS_TO_FOLLOW.style.visibility = VISIBILITY_HIDDEN
-  // }else{
-  //   TOPICS_TO_FOLLOW.style.visibility = VISIBILITY_VISIBLE
-  // }
 
 
+
+  
+function homePageTwitterHasLoaded() {
+  return hasTwitterPanelLoaded() && getTwitterFeed()
 }
 
 
+function getTwitterFeed(){
+  return document.querySelectorAll('[role="main"]')[0].children[0].children[0]
+  .children[0].children[0].children[0].children[3]
 
   
-  function homePageTwitterHasLoaded() {
-    return hasTwitterPanelLoaded() && getTwitterFeed()
+}
+
+function getTwitterPanel(){
+  return document.querySelectorAll('[role="main"]')[0].children[0].children[0]
+  .children[0].children[1].children[0].children[1].children[0].children[0]
+  .children[0]
+}
+
+
+function hasTwitterPanelLoaded(){
+  let panel = getTwitterPanel()
+  console.log(panel.children.length)
+  console.log(panel.children)
+  console.log(panel.children.length)
+  return panel.children.length == 5
+}
+
+function getTwitterTopicsToFollow(){
+  let topics_to_follow_index = 3
+  if(!initialLoad){
+    console.log("here")
+    topics_to_follow_index = 4
   }
   
+  return document.querySelectorAll('[role="main"]')[0].children[0].children[0]
+  .children[0].children[1].children[0].children[1].children[0].children[0]
+  .children[0].children[topics_to_follow_index]
+}
 
-  function getTwitterFeed(){
-    return document.querySelectorAll('[role="main"]')[0].children[0].children[0]
-    .children[0].children[0].children[0].children[3]
-
-    
+function getTwitterFeedClassName() {
+  let feed = getTwitterFeed()
+  console.log(feed)
+  if(feed != null){
+    return feed.className
+  }else{
+    throw 'feed class name not found!';
   }
 
-  function getTwitterPanel(){
-    return document.querySelectorAll('[role="main"]')[0].children[0].children[0]
-    .children[0].children[1].children[0].children[1].children[0].children[0]
-    .children[0]
+}
+
+function getTwitterPanelClassName() {
+  let panel = getTwitterPanel()
+  console.log(panel)
+  if(panel != null){
+    return panel.className
+  }else{
+    throw 'panel class name not found!';
   }
-
-
-  function hasTwitterPanelLoaded(){
-    let panel = getTwitterPanel()
-    console.log(panel.children.length)
-    console.log(panel.children)
-    console.log(panel.children.length)
-    return panel.children.length == 5
-  }
-
-  function getTwitterTopicsToFollow(){
-    let topics_to_follow_index = 3
-    if(!initialLoad){
-      console.log("here")
-      topics_to_follow_index = 4
-    }
-   
-    return document.querySelectorAll('[role="main"]')[0].children[0].children[0]
-    .children[0].children[1].children[0].children[1].children[0].children[0]
-    .children[0].children[topics_to_follow_index]
-  }
-
-  function getTwitterFeedClassName() {
-    let feed = getTwitterFeed()
-    console.log(feed)
-    if(feed != null){
-      return feed.className
-    }else{
-      throw 'feed class name not found!';
-    }
-  
-  }
-  
-  function getTwitterPanelClassName() {
-    let panel = getTwitterPanel()
-    console.log(panel)
-    if(panel != null){
-      return panel.className
-    }else{
-      throw 'panel class name not found!';
-    }
-  }
-
-
-//   function getChildIndexOfFeedContainer(){
-//     var childElementIndex = 0;
-//     if(document.querySelectorAll(FEED_CONTAINER_CLASS_NAME)[childElementIndex].innerText.includes("Messages")){
-//         childElementIndex = 1
-//     }else{
-//         childElementIndex = 0
-//     }
-
-//     return childElementIndex
-// }
+}
 
 
