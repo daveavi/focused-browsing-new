@@ -34,9 +34,9 @@ function tabListener(tabId, changeInfo, tab){
       console.log(activeURL)
         if(focusMode["twitter"].focus){
           if (isURLTwitterHome(url)){
-            sendStatus("twitter","focus","tab")
-          }else{
-            sendStatus("twitter","focus", "removeIframe")
+            sendStatus("twitter","focus","initial")
+          }else if(url != "https://twitter.com/"){
+            sendStatus("twitter","focus", "hidePanels")
           } 
           activeURL = url
         }

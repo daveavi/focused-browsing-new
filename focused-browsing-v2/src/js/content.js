@@ -25,18 +25,21 @@ var TWITTER_FEED_PARENT_NODE;
 var TWITTER_FEED_CHILD_NODE; 
 var TOPICS_TO_FOLLOW = null;
 
+var PANEL_ELEMENTS = [] 
+
 function focusListener(msg) {
   console.log(msg)
   let status = msg.status
   let method = msg.method
   let url = msg.url
   if (status == "focus"){
-      if(method == "removeIframe"){
-          // removeIframe()
-          areDistractionsHidden = false;
-      }else if (url.includes("twitter")) {
+     if (url.includes("twitter")) {
           if(method == "initial"){
               focusTwitter();
+          }else if(method == "hidePanels"){
+            hideTwitterPanel(true)
+            hideTopicsToFollow(true)
+            areDistractionsHidden = false;
           }else{
               toggleTwitterDistractions(true);
           }
@@ -132,18 +135,19 @@ function hideLinkedIn(hide) {
     try {
 
       TWITTER_FEED_CLASS = getTwitterFeedClassName();
-      TWITTER_PANEL_CLASS = getTwitterPanelClassName();
+      // TWITTER_PANEL_CLASS = getTwitterPanelClassName();
 
       console.log(TWITTER_FEED_CLASS)
-      console.log(TWITTER_PANEL_CLASS)
+      // console.log(TWITTER_PANEL_CLASS)
 
       if (shouldHide) {
         // document.getElementsByClassName(
         //   TWITTER_FEED_CLASS
         // )[1].style.visibility = VISIBILITY_HIDDEN;
         hideTwitterFeed(true)
+        // setTimeOut(hideTwitterPanel(true), 200)
         hideTwitterPanel(true)
-        hideTopicsToFollow(true)
+        // hideTopicsToFollow(true)
         injectIframe();
         areDistractionsHidden = true;
       } else {
@@ -216,35 +220,56 @@ function hideTwitterFeed(shouldhide){
 var firstHide = true
 function hideTwitterPanel(shouldHide){
   if(shouldHide){
-    document.getElementsByClassName(
-      TWITTER_PANEL_CLASS
-    )[0].style.visibility = VISIBILITY_HIDDEN;
+    // document.getElementsByClassName(
+    //   TWITTER_PANEL_CLASS
+    // )[0].style.visibility = VISIBILITY_HIDDEN;
+    let PANEL = getTwitterPanel()
 
+    console.log("here are the panels children")
+    console.log(PANEL.children)
+    console.log(PANEL.children.length)
+
+    // for(let i=1; i<PANEL.children.length; i++){
+    //   // PANEL_ELEMENTS.append(PANEL[i])
+    //   console.log("i is: "+ i)
+    //   console.log(PANEL.children[i])
+    //   PANEL.removeChild(PANEL.children[i])
+    // }
+    // console.log(PANEL.children)
+
+    i = 4
+    while (PANEL.children.length > 1) {
+      PANEL.removeChild(PANEL.children[i])
+      i-=1
+    }
+    
   }else{
-    document.getElementsByClassName(
-      TWITTER_PANEL_CLASS
-    )[0].style.visibility = VISIBILITY_VISIBLE;
+    // document.getElementsByClassName(
+    //   TWITTER_PANEL_CLASS
+    // )[0].style.visibility = VISIBILITY_VISIBLE;
     
   }
 }
 
 function hideTopicsToFollow(shouldHide){
 
-  if(shouldHide){   
-    if(!TOPICS_TO_FOLLOW){
-      TOPICS_TO_FOLLOW = getTwitterTopicsToFollow()
-    }
-    TOPICS_TO_FOLLOW.style.visibility = VISIBILITY_HIDDEN
-  }else{
-    TOPICS_TO_FOLLOW.style.visibility = VISIBILITY_VISIBLE
-  }
+  // if(shouldHide){   
+  //   if(!TOPICS_TO_FOLLOW){
+  //     TOPICS_TO_FOLLOW = getTwitterTopicsToFollow()
+  //   }
+  //   TOPICS_TO_FOLLOW.style.visibility = VISIBILITY_HIDDEN
+  // }else{
+  //   TOPICS_TO_FOLLOW.style.visibility = VISIBILITY_VISIBLE
+  // }
+
+
 }
 
 
 
   
   function homePageTwitterHasLoaded() {
-    return getTwitterPanel() && getTwitterFeed() && getTwitterTopicsToFollow();
+    return hasTwitterPanelLoaded() && getTwitterFeed()
   }
   
 
@@ -258,7 +283,16 @@ function hideTopicsToFollow(shouldHide){
   function getTwitterPanel(){
     return document.querySelectorAll('[role="main"]')[0].children[0].children[0]
     .children[0].children[1].children[0].children[1].children[0].children[0]
-    .children[0].children[2]
+    .children[0]
+  }
+
+
+  function hasTwitterPanelLoaded(){
+    let panel = getTwitterPanel()
+    console.log(panel.children.length)
+    console.log(panel.children)
+    console.log(panel.children.length)
+    return panel.children.length == 5
   }
 
   function getTwitterTopicsToFollow(){
@@ -267,10 +301,7 @@ function hideTopicsToFollow(shouldHide){
       console.log("here")
       topics_to_follow_index = 4
     }
-    console.log(document.querySelectorAll('[role="main"]')[0].children[0].children[0]
-    .children[0].children[1].children[0].children[1].children[0].children[0]
-    .children[0].children[topics_to_follow_index])
-
+   
     return document.querySelectorAll('[role="main"]')[0].children[0].children[0]
     .children[0].children[1].children[0].children[1].children[0].children[0]
     .children[0].children[topics_to_follow_index]
