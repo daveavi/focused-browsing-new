@@ -27,6 +27,10 @@ var TOPICS_TO_FOLLOW = null;
 
 var PANEL_ELEMENTS = [] 
 
+  
+var homePageTwitterHidden = false;
+var panelPageTwitterHidden = false
+
 function focusListener(msg) {
   console.log(msg)
   let status = msg.status
@@ -36,12 +40,14 @@ function focusListener(msg) {
      if (url.includes("twitter")) {
           if(method == "initial"){
               focusTwitter();
+              panelPageTwitterHidden = false;
           }else if(method == "hidePanels"){
-            hideTwitterPanel(true)
-            hideTopicsToFollow(true)
-            areDistractionsHidden = false;
+              PANEL_ELEMENTS = [] 
+              focusTwitterPanel();
+              homePageTwitterHidden = false;
           }else{
               toggleTwitterDistractions(true);
+              panelPageTwitterHidden = false;
           }
           startIframe();
       } else if (url.includes("linkedin")){
@@ -125,73 +131,90 @@ function hideLinkedIn(hide) {
     }
   }
   
-  var areDistractionsHidden = false;
-  function toggleTwitterDistractions(shouldHide) {
-    console.log("here we are in toggle twitter distraction")
-    console.log("should hide is: " + shouldHide)
+var homePageTwitterHidden = false;
+function toggleTwitterDistractions(shouldHide) {
+  console.log("here we are in toggle twitter distraction")
+  console.log("should hide is: " + shouldHide)
 
 
 
+  try {
+
+    TWITTER_FEED_CLASS = getTwitterFeedClassName();
+    if (shouldHide) {
+      hideTwitterFeed(true)
+      hideTwitterPanel(true)
+      injectIframe();
+      homePageTwitterHidden = true;
+    } else {
+      hideTwitterFeed(false)
+      hideTwitterPanel(false)
+      homePageTwitterHidden = false;
+      removeIframe()
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}
+  
+var intervalId;
+var panelPageTwitterHidden = false
+function tryBlockingTwitterHome() {
+  console.log("we are trying to block twitter home")
+  if (homePageTwitterHidden) {
+    console.log("we can clear the interval")
+    console.log(intervalId)
+    clearInterval(intervalId);
+    initialLoad = false;
+    return
+  } else {
     try {
-
-      TWITTER_FEED_CLASS = getTwitterFeedClassName();
-      // TWITTER_PANEL_CLASS = getTwitterPanelClassName();
-
-      console.log(TWITTER_FEED_CLASS)
-      // console.log(TWITTER_PANEL_CLASS)
-
-      if (shouldHide) {
-        // document.getElementsByClassName(
-        //   TWITTER_FEED_CLASS
-        // )[1].style.visibility = VISIBILITY_HIDDEN;
-        hideTwitterFeed(true)
-        hideTwitterPanel(true)
-        injectIframe();
-        areDistractionsHidden = true;
-      } else {
-        console.log("here is our un focus block of code")
-        // document.getElementsByClassName(
-        //   TWITTER_FEED_CLASS
-        // )[1].style.visibility = VISIBILITY_VISIBLE;
-        hideTwitterFeed(false)
-        hideTwitterPanel(false)
-        areDistractionsHidden = false;
-        removeIframe()
+      if (homePageTwitterHasLoaded()) {
+          console.log("here in blocking twitter")
+          toggleTwitterDistractions(true);
       }
     } catch (err) {
-      console.log(err);
+      console.log("Feed hasn't been loaded yet");
     }
   }
-  
-  var intervalId;
-  function tryBlockingTwitterHome() {
-    console.log("we are trying to block twitter home")
-    if (areDistractionsHidden) {
-      console.log("we can clear the interval")
-      console.log(intervalId)
-      clearInterval(intervalId);
-      initialLoad = false;
-      return
-    } else {
-      try {
-        if (homePageTwitterHasLoaded()) {
-            console.log("here in blocking twitter")
-            toggleTwitterDistractions(true);
-        }
-      } catch (err) {
-        console.log("Feed hasn't been loaded yet");
+}
+
+function tryBlockingTwitterPanel() {
+  console.log("we are trying to block twitter panel")
+  if (panelPageTwitterHidden) {
+    console.log("we can clear the interval")
+    console.log(intervalId)
+    clearInterval(pageInterval);
+    return
+  } else {
+    try {
+      if (hasTwitterPanelLoaded()) {
+          console.log("here in blocking twitter panel")
+          hideTwitterPanel(true);
+          panelPageTwitterHidden= true
       }
+    } catch (err) {
+      console.log(err)
+      // console.log("Panel hasn't been loaded yet");
     }
   }
-  
-  function focusTwitter() {
-    console.log("setting interval to block twitter")
-    if (initialLoad) {
-      intervalId = setInterval(tryBlockingTwitterHome, 1000);
-    } else {
-      intervalId = setInterval(tryBlockingTwitterHome, 100);
-    }
+}
+
+function focusTwitter() {
+  console.log("setting interval to block twitter")
+  if (initialLoad) {
+    console.log("1000 interval")
+    intervalId = setInterval(tryBlockingTwitterHome, 1000);
+  } else {
+    intervalId = setInterval(tryBlockingTwitterHome, 100);
   }
+}
+
+
+var pageInterval;
+function focusTwitterPanel(){
+  pageInterval = setInterval(tryBlockingTwitterPanel, 200);
+}
 
 
 
@@ -205,26 +228,19 @@ function hideTwitterFeed(shouldhide){
     TWITTER_FEED_CHILD = document.getElementsByClassName(
       TWITTER_FEED_CLASS
     )[1].children[0]
-    TWITTER_FEED_PARENT_NODE.removeChild(TWITTER_FEED_PARENT_NODE.childNodes[0])
-    console.log(TWITTER_FEED_CHILD)
-  }else{
-    console.log("APPENDING TWITTER_FEED_CHILD")
-    console.log(TWITTER_FEED_CHILD)
-    TWITTER_FEED_PARENT_NODE.append(TWITTER_FEED_CHILD)
 
+    TWITTER_FEED_PARENT_NODE.removeChild(TWITTER_FEED_PARENT_NODE.childNodes[0])
+
+  }else{
+    TWITTER_FEED_PARENT_NODE.append(TWITTER_FEED_CHILD)
   }
 }
 
-var firstHide = true
+
 function hideTwitterPanel(shouldHide){
 
   let PANEL = getTwitterPanel()
-  console.log("PANEL IS")
-  console.log(PANEL)
   if(shouldHide){
-    console.log("here are the panels children")
-    console.log(PANEL.children)
-    console.log(PANEL.children.length)
     let i = 4
     while (PANEL.children.length > 1) {
       var nodeChild = PANEL.children[i].cloneNode(true)
@@ -232,20 +248,12 @@ function hideTwitterPanel(shouldHide){
       PANEL.removeChild(PANEL.children[i])
       i-=1
     }
-    console.log(PANEL_ELEMENTS)
   }else{
     let i = 3
-    console.log(PANEL.children)
     while(i >= 0){
-      console.log("first element is")
-      console.log(PANEL_ELEMENTS[i])
       PANEL.append(PANEL_ELEMENTS[i])
       i-=1
     }
-    // document.getElementsByClassName(
-    //   TWITTER_PANEL_CLASS
-    // )[0].style.visibility = VISIBILITY_VISIBLE;
-    
   }
 }
 
@@ -274,23 +282,9 @@ function getTwitterPanel(){
 
 function hasTwitterPanelLoaded(){
   let panel = getTwitterPanel()
-  console.log(panel.children.length)
-  console.log(panel.children)
-  console.log(panel.children.length)
   return panel.children.length == 5
 }
 
-function getTwitterTopicsToFollow(){
-  let topics_to_follow_index = 3
-  if(!initialLoad){
-    console.log("here")
-    topics_to_follow_index = 4
-  }
-  
-  return document.querySelectorAll('[role="main"]')[0].children[0].children[0]
-  .children[0].children[1].children[0].children[1].children[0].children[0]
-  .children[0].children[topics_to_follow_index]
-}
 
 function getTwitterFeedClassName() {
   let feed = getTwitterFeed()
@@ -299,17 +293,6 @@ function getTwitterFeedClassName() {
     return feed.className
   }else{
     throw 'feed class name not found!';
-  }
-
-}
-
-function getTwitterPanelClassName() {
-  let panel = getTwitterPanel()
-  console.log(panel)
-  if(panel != null){
-    return panel.className
-  }else{
-    throw 'panel class name not found!';
   }
 }
 
