@@ -1,5 +1,5 @@
 # focused-browsing-v2
-To run project here are the instructions:
+To run Focused Browsing here are the instructions:
 
 1. Go to project folder
 ```
