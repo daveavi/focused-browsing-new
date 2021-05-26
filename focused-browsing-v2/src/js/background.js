@@ -63,14 +63,20 @@ function isURLTwitterHome(url){
 
 function toggleFocusListener(command,tab) {
   chrome.tabs.get(tab.id, function (tab) {
-    activeURL = tab.url
+    let url = tab.url
     console.log(command)
-    if (isURLTwitterHome(activeURL)) {
-      console.log("sending message to twitter")
-      toggleFocus("twitter")
-    } else if (activeURL === "https://www.linkedin.com/feed/") {
+    if(url.includes("twitter.com")){
+      if(isURLTwitterHome(url)) {
+        console.log("sending message to twitter")
+        toggleFocus("twitter","toggle")
+      }else{
+        toggleFocus("twitter","hidePanels")
+
+      }
+
+    }else if (url === "https://www.linkedin.com/feed/") {
       console.log("sending message to linkedin")
-      toggleFocus("linkedin")
+      toggleFocus("linkedin","toggle")
     }
   });
 }
@@ -94,7 +100,7 @@ chrome.runtime.onMessage.addListener(
 
     let webPage = activeURL.includes("twitter.com") ? "twitter" : "linkedin"
     if (request.status == "focus"){
-      toggleFocus(webPage)
+      toggleFocus(webPage,"toggle")
     }
     sendResponse({enabled: "focus"})
     return true
@@ -107,13 +113,13 @@ chrome.runtime.onMessage.addListener(
 
 
 
-function toggleFocus(webPage) {
+function toggleFocus(webPage,method) {
     if (!focusMode[webPage].focus) {
       console.log("focus mode on " + webPage)
-      sendStatus(webPage,"focus",  "toggle")
+      sendStatus(webPage,"focus",  method)
     } else {
       console.log("unfocus mode on " + webPage)
-      sendStatus(webPage,"unfocus", "toggle")
+      sendStatus(webPage,"unfocus", method)
     }
     focusMode[webPage].focus = !focusMode[webPage].focus
 }
@@ -122,22 +128,12 @@ function toggleFocus(webPage) {
 function sendStatus(webPage,status,method){
   try{
     console.log("sending status " + status +" on "+webPage)
-    // port.postMessage({"status":status, "method": method})
-
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
       let url = tabs[0].url
       let tabID = tabs[0].id
       console.log("sending message to this ID")
       console.log(tabID)
-
-
       let port = getPortByID(tabID)
-      // // if 
-      // setTimeout(function(){
-      //   let port = getPortByID(tabID)
-      // }, 500)
-
-      // // console.log(port)
       let focusObject = {"url":url,"status":status, "method": method}
       port.postMessage(focusObject)
     });

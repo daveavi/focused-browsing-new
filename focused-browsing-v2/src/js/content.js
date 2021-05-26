@@ -40,10 +40,8 @@ function focusListener(msg) {
           }else if(method == "hidePanels"){
               PANEL_ELEMENTS = [] 
               focusTwitterPanel();
-              homePageTwitterHidden = false;
           }else{
               toggleTwitterDistractions(true);
-              panelPageTwitterHidden = false;
           }
           startIframe();
       } else if (url.includes("linkedin")){
@@ -53,8 +51,12 @@ function focusListener(msg) {
       }
   }else if(msg.status == "unfocus"){
       if (url.includes("twitter")) {
-          console.log("about to un-focus on Twitter");
-          toggleTwitterDistractions(false);
+          if(url.includes("/home")){
+            console.log("about to un-focus on Twitter");
+            toggleTwitterDistractions(false)
+          }else{
+            hideTwitterPanel(false)
+          }
       } else if (url.includes("linkedin")) {
           console.log("about to un-focus on linkedin");
           hideLinkedIn(false);
@@ -199,7 +201,7 @@ function focusTwitter() {
 
 var pageInterval;
 function focusTwitterPanel(){
-  pageInterval = setInterval(tryBlockingTwitterPanel, 500);
+  pageInterval = setInterval(tryBlockingTwitterPanel, 1000);
 }
 
 
