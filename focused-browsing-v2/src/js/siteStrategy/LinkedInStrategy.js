@@ -1,12 +1,13 @@
 export default class LinkedInStrategy {
-    constructor(appIframe){
+    constructor(feedIframe,panelIframe){
         this.PANEL_ELEMENTS = [] 
-        this.appIframe = appIframe
         this.LINKEDIN_FEED_CLASS = "scaffold-layout__main"
         this.PANEL_CLASS = "scaffold-layout__aside"
         this.feedIntervalId = 0
         this.pageInterval = 0
         this.initialLoad = false;
+        this.feedIframe = feedIframe
+        this.panelIframe = panelIframe
     }
 
 
@@ -71,7 +72,7 @@ export default class LinkedInStrategy {
             if (shouldHide) {
               this.hideLinkedInFeed(true)
               this.hideLinkedInPanel(true)
-              this.injectIframe();
+              this.injectFeedCard();
             } else {
               this.hideLinkedInFeed(false)
               this.hideLinkedInPanel(false)
@@ -134,8 +135,8 @@ export default class LinkedInStrategy {
         }
     }
 
-    injectIframe() {
-        this.LINKEDIN_FEED_PARENT_NODE.append(this.appIframe)
+    injectFeedCard() {
+        this.LINKEDIN_FEED_PARENT_NODE.append(this.feedIframe)
     }
    
 

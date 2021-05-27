@@ -1,9 +1,6 @@
-const HOME_PAGE_CLASS = "self-focused ember-view";
-
-
-const DEFAULT_FRAME_HEIGHT = "100px";
-const DEFAULT_FRAME_WIDTH = "120px";
-const IFRAME_ID = "focus-card"
+const DEFAULT_FRAME_HEIGHT = "4000px";
+const DEFAULT_FRAME_WIDTH = "598px";
+const IFRAME_ID = "focus-card";
 
 
 import TwitterStrategy from './siteStrategy/TwitterStrategy'
@@ -16,11 +13,12 @@ var twitterStrategy, linkedInStrategy;
 
 
 ;(function () {
+  console.log()
   port = chrome.runtime.connect({name: "Focused Browsing"});
   port.onMessage.addListener(focusListener)
   let appIframe = initIframe()
-  twitterStrategy = new TwitterStrategy(appIframe)
-  linkedInStrategy = new LinkedInStrategy(appIframe)
+  twitterStrategy = new TwitterStrategy()
+  linkedInStrategy = new LinkedInStrategy()
 })()
 
 function focusListener(msg) {
@@ -81,27 +79,5 @@ function removeIframe(){
     console.log("the iframe is not on the screen")
   }
    
-}
-
-
-function hideLinkedIn(hide) {
-    console.log("here in this linkedIn function")
-    try {
-      if (hide) {
-        console.log("about to hide linkedIn feed")
-        document.getElementsByClassName(
-          HOME_PAGE_CLASS
-        )[0].style.visibility = VISIBILITY_HIDDEN;
-        injectIframe()
-      } else {
-        console.log("about to make linkedIn feed visible")
-        document.getElementsByClassName(
-          HOME_PAGE_CLASS
-        )[0].style.visibility = VISIBILITY_VISIBLE;
-        removeIframe()
-      }
-    } catch (err) {
-      console.log(err);
-    }
 }
   

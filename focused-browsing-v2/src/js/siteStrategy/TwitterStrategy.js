@@ -1,6 +1,6 @@
 export default class TwitterStrategy {
 
-    constructor(appIframe){
+    constructor(feedIframe,panelIframe){
         this.PANEL_ELEMENTS = []
         this.appIframe = appIframe
         this.TWITTER_FEED_PARENT_NODE = null
@@ -9,6 +9,8 @@ export default class TwitterStrategy {
         this.feedIntervalId = 0
         this.pageInterval = 0
         this.initialLoad = false
+        this.feedIframe = feedIframe
+        this.panelIframe = panelIframe
     }
       
 
