@@ -6,9 +6,12 @@ const DEFAULT_FRAME_HEIGHT = "100px";
 const DEFAULT_FRAME_WIDTH = "120px";
 const IFRAME_ID = "focus-card"
 
-var port; 
+
 import TwitterStrategy from './siteStrategy/TwitterStrategy'
-var twitterStrategy;
+import LinkedInStrategy from './siteStrategy/LinkedInStrategy'
+
+var port; 
+var twitterStrategy, linkedInStrategy;
 
 
 
@@ -18,6 +21,7 @@ var twitterStrategy;
   port.onMessage.addListener(focusListener)
   appIframe = initIframe()
   twitterStrategy = new TwitterStrategy(appIframe)
+  linkedInStrategy = new LinkedInStrategy(appIframe)
 })()
 
 function focusListener(msg) {
@@ -36,9 +40,10 @@ function focusListener(msg) {
           }
           startIframe();
       } else if (url.includes("linkedin")){
-          console.log("about to focus on linkedin");
-          startIframe();
-          hideLinkedIn(true);
+          // console.log("about to focus on linkedin");
+          // startIframe();
+          // hideLinkedIn(true);
+          linkedInStrategy.focusLinkedIn()
       }
   }else if(msg.status == "unfocus"){
       if (url.includes("twitter")) {

@@ -9,9 +9,6 @@ export default class TwitterStrategy {
         this.feedIntervalId = 0
         this.pageInterval = 0
         this.initialLoad = false
-        
-
-        
     }
       
 
@@ -118,19 +115,19 @@ export default class TwitterStrategy {
         let PANEL = this.getTwitterPanel()
         if(shouldHide){
           let length = PANEL.children.length
-      
+
           while (length != 1) {
             var currentLastChild = PANEL.lastChild
             this.PANEL_ELEMENTS.push(currentLastChild)
             PANEL.removeChild(currentLastChild)
             length -= 1 
           }
-      
-      
+
         }else{
           for(let i =0; i<this.PANEL_ELEMENTS.length; i+=1){
             PANEL.append(this.PANEL_ELEMENTS[i])
           }
+          this.PANEL_ELEMENTS = []
       
         }
     }

@@ -10,20 +10,20 @@ chrome.runtime.onConnect.addListener(function (connectionPort) {
 });
 
 
-chrome.tabs.onActivated.addListener(function(activeInfo, tab) {
-  chrome.tabs.getSelected(null,function(tab) {
-    let url = tab.url;
-    if(url){
-      if(url.includes("twitter.com") && focusMode["twitter"].focus){
-        console.log("new tab url is: "+ url)
-        if(isURLTwitterHome(url)){
-          sendStatus("twitter","focus","tab")
-        }
-      }
-    }
+// chrome.tabs.onActivated.addListener(function(activeInfo, tab) {
+//   chrome.tabs.getSelected(null,function(tab) {
+//     let url = tab.url;
+//     if(url){
+//       if(url.includes("twitter.com") && focusMode["twitter"].focus){
+//         console.log("new tab url is: "+ url)
+//         if(isURLTwitterHome(url)){
+//           sendStatus("twitter","focus","tab")
+//         }
+//       }
+//     }
     
-  });
-});
+//   });
+// });
 
 
 function tabListener(tabId, changeInfo, tab){
