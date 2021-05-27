@@ -40,7 +40,6 @@ function focusListener(msg) {
             //  twitterStrategy.injectCards("home")
           }else if(method == "hidePanels"){
              twitterStrategy.focusTwitterPanel();
-            //  twitterStrategy.injectCards("not home")
           }else{
              twitterStrategy.toggleTwitterHomeDistractions(true);
             //  twitterStrategy.injectCards("home")

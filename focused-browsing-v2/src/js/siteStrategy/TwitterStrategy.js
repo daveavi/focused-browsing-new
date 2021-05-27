@@ -73,7 +73,6 @@ export default class TwitterStrategy {
             this.hideTwitterPanel(true)
             this.injectCards("home")
           } else {
-            this.removeCards()
             this.hideTwitterFeed(false)
             this.hideTwitterPanel(false)
             // removeIframe()
@@ -124,6 +123,8 @@ export default class TwitterStrategy {
             PANEL.removeChild(currentLastChild)
             length -= 1 
           }
+
+          this.injectCards("panel")
 
         }else{
           for(let i =0; i<this.PANEL_ELEMENTS.length; i+=1){
@@ -192,7 +193,7 @@ export default class TwitterStrategy {
                 console.log(FEED.children)
                 return FEED.children[0].nodeName == "IFRAME" && PANEL.children.length == 2;
             } else {
-                return PANEL.children.length == 1
+                return PANEL.children.length == 2;
             }
         }catch(err){
             // console.log(err)
