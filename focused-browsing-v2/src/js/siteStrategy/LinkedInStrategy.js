@@ -2,7 +2,7 @@ export default class LinkedInStrategy {
     constructor(appIframe){
         this.PANEL_ELEMENTS = [] 
         this.appIframe = appIframe
-        this.LINKEDIN_FEED_ID = "ember62"
+        this.LINKEDIN_FEED_CLASS = "scaffold-layout__main"
         this.PANEL_CLASS = "scaffold-layout__aside"
         this.feedIntervalId = 0
         this.pageInterval = 0
@@ -12,7 +12,7 @@ export default class LinkedInStrategy {
 
 
     getLinkedInFeed(){
-        return document.getElementById(this.LINKEDIN_FEED_ID)
+        return document.getElementsByClassName(this.LINKEDIN_FEED_CLASS)[0].children[2]
     }
       
     getLinkedInPanel(){
@@ -34,7 +34,7 @@ export default class LinkedInStrategy {
     }
 
     focusLinkedIn() {
-        console.log("setting interval to block twitter")
+        console.log("setting interval to block LINKEDIN")
         if (!this.initialLoad) {
           this.feedIntervalId = setInterval(this.tryBlockingLinkedInHome.bind(this), 500);
           this.initialLoad = !this.initialLoad
@@ -44,7 +44,7 @@ export default class LinkedInStrategy {
     }
 
     tryBlockingLinkedInHome(){
-        console.log("we are trying to block twitter home")
+        console.log("we are trying to block LINKEDIN home")
         // console.log(this.distractionsHidden("home"))
         if (this.distractionsHidden("home")) {
           console.log("we can clear the interval")
@@ -56,7 +56,7 @@ export default class LinkedInStrategy {
           console.log("distractions are not hidden")
           try {
             if (this.homePageLinkedInHasLoaded()) {
-                console.log("here in blocking twitter")
+                console.log("here in blocking LINKEDIN")
                 this.toggleLinkedInHomeDistractions(true);
             }
           } catch (err) {
@@ -71,7 +71,7 @@ export default class LinkedInStrategy {
             if (shouldHide) {
               this.hideLinkedInFeed(true)
               this.hideLinkedInPanel(true)
-            //   this.injectIframe();
+              this.injectIframe();
             } else {
               this.hideLinkedInFeed(false)
               this.hideLinkedInPanel(false)
@@ -84,7 +84,7 @@ export default class LinkedInStrategy {
 
     hideLinkedInFeed(shouldHide){
         if(shouldHide){
-            console.log("here trying to hide lInkedin")
+            console.log("here trying to hide lInkedin FEED")
             this.LINKEDIN_FEED_PARENT_NODE = this.getLinkedInFeed()
 
             this.LINKEDIN_FEED_CHILD_NODE = this.LINKEDIN_FEED_PARENT_NODE.children[1]
@@ -102,11 +102,7 @@ export default class LinkedInStrategy {
           let length = PANEL.children.length
           console.log(PANEL.children)
           while (length != 0) {
-            console.log("panel length")
-            console.log(length)
             var currentLastChild = PANEL.children[length-1]
-            console.log("current last child")
-            console.log(currentLastChild)
             this.PANEL_ELEMENTS.push(currentLastChild)
             PANEL.removeChild(currentLastChild)
             length -= 1 
@@ -128,7 +124,7 @@ export default class LinkedInStrategy {
             if (isHome == "home") {
                 let FEED = this.getLinkedInFeed()
                 // return FEED.children[0].nodeName == "IFRAME" && PANEL.children.length == 1;
-                return FEED.children.length == 1 && PANEL.children.length == 0;
+                return FEED.children.length == 2 && PANEL.children.length == 0;
             } else {
                 return PANEL.children.length == 1
             }
@@ -137,7 +133,10 @@ export default class LinkedInStrategy {
             console.log(err)
         }
     }
-    
+
+    injectIframe() {
+        this.LINKEDIN_FEED_PARENT_NODE.append(this.appIframe)
+    }
    
 
 

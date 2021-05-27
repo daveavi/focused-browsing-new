@@ -46,6 +46,7 @@ function tabListener(tabId, changeInfo, tab){
         }
     }
   }
+  console.log(changeInfo)
 
 }
 

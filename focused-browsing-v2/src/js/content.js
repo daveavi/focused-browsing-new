@@ -1,6 +1,5 @@
 const HOME_PAGE_CLASS = "self-focused ember-view";
 
-var appIframe;
 
 const DEFAULT_FRAME_HEIGHT = "100px";
 const DEFAULT_FRAME_WIDTH = "120px";
@@ -19,7 +18,7 @@ var twitterStrategy, linkedInStrategy;
 ;(function () {
   port = chrome.runtime.connect({name: "Focused Browsing"});
   port.onMessage.addListener(focusListener)
-  appIframe = initIframe()
+  let appIframe = initIframe()
   twitterStrategy = new TwitterStrategy(appIframe)
   linkedInStrategy = new LinkedInStrategy(appIframe)
 })()
@@ -38,11 +37,8 @@ function focusListener(msg) {
           }else{
              twitterStrategy.toggleTwitterHomeDistractions(true);
           }
-          startIframe();
       } else if (url.includes("linkedin")){
-          // console.log("about to focus on linkedin");
-          // startIframe();
-          // hideLinkedIn(true);
+          console.log("about to focus on linkedin");
           linkedInStrategy.focusLinkedIn()
       }
   }else if(msg.status == "unfocus"){
@@ -56,7 +52,7 @@ function focusListener(msg) {
           }
       } else if (url.includes("linkedin")) {
           console.log("about to un-focus on linkedin");
-          hideLinkedIn(false);
+          linkedInStrategy.toggleLinkedInHomeDistractions(false)
       }
   }
 }
@@ -64,7 +60,7 @@ function focusListener(msg) {
 
 
 function initIframe() {
-    appIframe = document.createElement("iframe");
+    let appIframe = document.createElement("iframe");
     appIframe.width = DEFAULT_FRAME_WIDTH;
     appIframe.height = DEFAULT_FRAME_HEIGHT;
     appIframe.id = IFRAME_ID;
@@ -72,14 +68,11 @@ function initIframe() {
     Object.assign(appIframe.style, {
         position: "fixed",
         border: "none",
-        zIndex: "10000",
     });
+    appIframe.src = chrome.runtime.getURL("www/card.html");
     return appIframe
 }
 
-function startIframe() {
-    appIframe.src = chrome.runtime.getURL("www/card.html");
-}
 
 function removeIframe(){
   try{
