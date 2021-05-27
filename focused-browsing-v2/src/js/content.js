@@ -1,6 +1,10 @@
-const DEFAULT_FRAME_HEIGHT = "4000px";
-const DEFAULT_FRAME_WIDTH = "598px";
-const IFRAME_ID = "focus-card";
+const TWITTER_FEED_FRAME_HEIGHT = "4000px";
+const TWITTER_FEED_FRAME_WIDTH = "598px";
+
+const TWITTER_PANEL_FRAME_HEIGHT = "4000px";
+const TWITTER_PANEL_FRAME_WIDTH = "350px";
+
+const IFRAME_ClASS = "focus-card";
 
 
 import TwitterStrategy from './siteStrategy/TwitterStrategy'
@@ -16,9 +20,12 @@ var twitterStrategy, linkedInStrategy;
   console.log()
   port = chrome.runtime.connect({name: "Focused Browsing"});
   port.onMessage.addListener(focusListener)
-  let appIframe = initIframe()
-  twitterStrategy = new TwitterStrategy()
-  linkedInStrategy = new LinkedInStrategy()
+  let twitterCards = initIframeTwitter()
+  let feedIframe = twitterCards[0]
+  let panelIframe = twitterCards[1]
+
+  twitterStrategy = new TwitterStrategy(feedIframe, panelIframe)
+  // linkedInStrategy = new LinkedInStrategy()
 })()
 
 function focusListener(msg) {
@@ -30,10 +37,13 @@ function focusListener(msg) {
      if (url.includes("twitter")) {
           if(method == "initial"){
              twitterStrategy.focusTwitter();
+            //  twitterStrategy.injectCards("home")
           }else if(method == "hidePanels"){
              twitterStrategy.focusTwitterPanel();
+            //  twitterStrategy.injectCards("not home")
           }else{
              twitterStrategy.toggleTwitterHomeDistractions(true);
+            //  twitterStrategy.injectCards("home")
           }
       } else if (url.includes("linkedin")){
           console.log("about to focus on linkedin");
@@ -43,11 +53,12 @@ function focusListener(msg) {
       if (url.includes("twitter")) {
           if(url.includes("/home")){
             console.log("about to un-focus on Twitter");
+            removeCards()
             twitterStrategy.toggleTwitterHomeDistractions(false)
-            removeIframe()
           }else{
             twitterStrategy.hideTwitterPanel(false)
           }
+          removeCards()
       } else if (url.includes("linkedin")) {
           console.log("about to un-focus on linkedin");
           linkedInStrategy.toggleLinkedInHomeDistractions(false)
@@ -57,27 +68,49 @@ function focusListener(msg) {
 
 
 
-function initIframe() {
-    let appIframe = document.createElement("iframe");
-    appIframe.width = DEFAULT_FRAME_WIDTH;
-    appIframe.height = DEFAULT_FRAME_HEIGHT;
-    appIframe.id = IFRAME_ID;
+function initIframeTwitter() {
+    let feedIframe = document.createElement("iframe")
+    let panelIframe = document.createElement("iframe")
 
-    Object.assign(appIframe.style, {
+    feedIframe.width = TWITTER_FEED_FRAME_WIDTH;
+    feedIframe.height = TWITTER_FEED_FRAME_HEIGHT;
+    feedIframe.className = IFRAME_ClASS;
+
+    panelIframe.width = TWITTER_PANEL_FRAME_WIDTH;
+    panelIframe.height = TWITTER_PANEL_FRAME_HEIGHT;
+    panelIframe.className = IFRAME_ClASS;
+
+    Object.assign(feedIframe.style, {
         position: "fixed",
         border: "none",
     });
-    appIframe.src = chrome.runtime.getURL("www/card.html");
-    return appIframe
+
+
+    Object.assign(panelIframe.style, {
+      position: "fixed",
+      border: "none",
+    });
+
+
+
+    feedIframe.src = chrome.runtime.getURL("www/twitter/twitterFeed.html");
+    panelIframe.src = chrome.runtime.getURL("www/twitter/twitterPanel.html")
+
+    return [feedIframe, panelIframe]
 }
 
 
-function removeIframe(){
+function removeCards(){
   try{
-    document.getElementById(IFRAME_ID).remove()
+    let cards = document.getElementsByClassName(IFRAME_ClASS)
+
+    Array.prototype.forEach.call(cards, function(el) {
+      // Do stuff here
+      el.remove()
+    });
   }catch(err){
+    console.log(err)
     console.log("the iframe is not on the screen")
   }
-   
 }
   

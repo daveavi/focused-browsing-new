@@ -2,7 +2,6 @@ export default class TwitterStrategy {
 
     constructor(feedIframe,panelIframe){
         this.PANEL_ELEMENTS = []
-        this.appIframe = appIframe
         this.TWITTER_FEED_PARENT_NODE = null
         this.TWITTER_FEED_CHILD_NODE = null
         this.TWITTER_FEED_CLASS = ""
@@ -12,7 +11,7 @@ export default class TwitterStrategy {
         this.feedIframe = feedIframe
         this.panelIframe = panelIframe
     }
-      
+  
 
     getTwitterFeed(){
         return document.querySelectorAll('[role="main"]')[0].children[0].children[0]
@@ -72,8 +71,9 @@ export default class TwitterStrategy {
           if (shouldHide) {
             this.hideTwitterFeed(true)
             this.hideTwitterPanel(true)
-            this.injectIframe();
+            this.injectCards("home")
           } else {
+            this.removeCards()
             this.hideTwitterFeed(false)
             this.hideTwitterPanel(false)
             // removeIframe()
@@ -187,18 +187,26 @@ export default class TwitterStrategy {
             console.log(PANEL)
             if (isHomePage == "home") {
                 let FEED = this.getTwitterFeed()
-                return FEED.children[0].nodeName == "IFRAME" && PANEL.children.length == 1;
+                console.log("Feed is")
+                console.log(FEED)
+                console.log(FEED.children)
+                return FEED.children[0].nodeName == "IFRAME" && PANEL.children.length == 2;
             } else {
                 return PANEL.children.length == 1
             }
         }catch(err){
-            console.log(err)
+            // console.log(err)
         }
     }
 
 
-    injectIframe() {
-        this.TWITTER_FEED_PARENT_NODE.append(this.appIframe)
+    injectCards(page) {
+        if(page == "home"){
+          this.TWITTER_FEED_PARENT_NODE.append(this.feedIframe)
+        }
+        let PANEL = this.getTwitterPanel()
+        PANEL.append(this.panelIframe)
     }
+
 
 }
