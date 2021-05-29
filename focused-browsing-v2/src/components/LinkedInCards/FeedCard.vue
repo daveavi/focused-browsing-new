@@ -1,60 +1,56 @@
 <template>
   <div class="focus-container">
-    <div class="viewport-card">
+    <div class="card-container">
+      <div class="card-main">
+        <div class="card-heading">
+          <div class="card-icon">
+            <img
+              alt=""
+              class="vector"
+              src="https://static.overlay-tech.com/assets/e54560b7-d19a-4cb1-9b3c-bea824664e73.svg"
+            />
+          </div>
+          <p class="heading">Focused Browsing is active</p>
+        </div>
+        <p class="card-subtitle">
+          This web extension helps you focus on your
+          creative and professional goals by hiding
+          distracting web elements on popular websites on
+          the internet.
+        </p>
+        <div class="button-group">
+          <div class="card-button-primary">
+            <p class="support-this-project">
+              Support this project
+            </p>
+          </div>
+          <div class="card-button-secondary">
+            <p class="show-feed">Show Feed</p>
+          </div>
+        </div>
+        <div class="card-text-links">
+          <p class="about-grey-software">
+            About Grey Software
+          </p>
+          <p class="about-grey-software">
+            About Focused Browsing
+          </p>
+        </div>
+      </div>
       <div class="card-container">
-        <div class="card-main">
-          <div class="card-heading">
-            <div class="card-icon">
-              <img
-                alt=""
-                class="vector"
-                src="https://static.overlay-tech.com/assets/eaad4a42-ec43-44da-b9a1-7ac938cbe85c.svg"
-              />
-            </div>
-            <p class="heading">
-              Focused Browsing is active
-            </p>
-          </div>
-          <p class="card-subtitle">
-            This web extension helps you focus on your
-            creative and professional goals by hiding
-            distracting web elements on popular websites on
-            the internet.
-          </p>
-          <div class="button-group">
-            <div class="card-button-primary">
-              <p class="support-this-project">
-                Support this project
-              </p>
-            </div>
-            <div class="card-button-secondary">
-              <p class="show-feed">Show Feed</p>
-            </div>
-          </div>
-          <div class="card-text-links">
-            <p class="about-grey-software">
-              About Grey Software
-            </p>
-            <p class="about-grey-software">
-              About Focused Browsing
-            </p>
-          </div>
-        </div>
-        <div class="card-container">
-          <p class="quote">
-            <strong class="quote-emphasis-0">“ </strong>Amet
-            minim mollit non deserunt ullamco est sit aliqua
-            dolor do amet sint. Velit officia consequat duis
-            enim velit mollit.<strong
-              class="quote-emphasis-0"
-            >
-              ”</strong
-            >
-          </p>
-          <p class="quoter">
-            - probably someone, year !&#64;#%
-          </p>
-        </div>
+        <p class="quote">
+          <strong class="quote-emphasis-0">“ </strong>Amet
+          minim mollit non deserunt ullamco est sit aliqua
+          dolor do amet sint. Velit officia consequat duis
+          enim velit mollit.<strong
+            class="quote-emphasis-0"
+          >
+            ”</strong
+          >
+        </p>
+        <p class="quoter">
+          - probably someone, year !&#64;#%
+        </p>
       </div>
     </div>
   </div>
@@ -62,7 +58,7 @@
 
 <script>
 export default {
-  name: "FocusContainerTwitterLight"
+  name: "FocusContainerLinkedIn"
 };
 </script>
 
@@ -126,18 +122,11 @@ $white-2: rgba(254, 254, 254, 1);
   font-weight: 400;
   line-height: 27px;
 }
-
 .focus-container {
   background-color: $white;
-  padding: 59px 0 60px;
+  padding: 123px 54px 123px 55px;
   display: flex;
   align-items: center;
-}
-.viewport-card {
-  background-color: $white;
-  padding: 106px 84px 76px 83px;
-  display: flex;
-  align-items: flex-start;
 }
 .card-container {
   display: flex;
@@ -149,17 +138,17 @@ $white-2: rgba(254, 254, 254, 1);
   margin-bottom: 42px;
   overflow: hidden;
   border-radius: 16px;
-  padding: 32px 44px 34px;
+  padding: 32px 46px 34px;
   box-shadow: 0 4px 12px 0 $transparent-black;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   height: 304px;
-  width: 344px;
+  width: 340px;
 }
 .card-heading {
   margin-bottom: 12px;
-  margin-left: 43px;
+  margin-left: 41px;
   display: flex;
   align-items: center;
 }
@@ -181,7 +170,7 @@ $white-2: rgba(254, 254, 254, 1);
 }
 .card-subtitle {
   height: 60px;
-  width: 344px;
+  width: 340px;
   color: $gray;
   display: flex;
   text-align: center;
@@ -191,7 +180,7 @@ $white-2: rgba(254, 254, 254, 1);
 }
 .button-group {
   margin-bottom: 33px;
-  margin-left: 19px;
+  margin-left: 17px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -215,7 +204,7 @@ $white-2: rgba(254, 254, 254, 1);
 .card-button-secondary {
   overflow: hidden;
   border-radius: 8px;
-  padding: 13px 116px 12px 115px;
+  padding: 13px 115px 12px 116px;
   display: flex;
   align-items: center;
   height: 21px;
@@ -228,7 +217,7 @@ $white-2: rgba(254, 254, 254, 1);
   @include inter-14-semi-bold;
 }
 .card-text-links {
-  margin-left: 15px;
+  margin-left: 13px;
   display: flex;
   align-items: flex-start;
 }

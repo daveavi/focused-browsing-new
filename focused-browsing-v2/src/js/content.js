@@ -17,9 +17,9 @@ var twitterStrategy, linkedInStrategy;
 
 
 ;(function () {
-  console.log()
   port = chrome.runtime.connect({name: "Focused Browsing"});
   port.onMessage.addListener(focusListener)
+
   let twitterCards = initIframeTwitter()
   let feedIframe = twitterCards[0]
   let panelIframe = twitterCards[1]
