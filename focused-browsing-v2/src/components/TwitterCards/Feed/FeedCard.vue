@@ -22,14 +22,21 @@
             the internet.
           </p>
           <div class="button-group">
-            <div class="button-primary">
-              <p class="support-this-project">
-                Support this project
-              </p>
-            </div>
-            <div class="button-secondary">
-              <p class="show-feed">Show Feed</p>
-            </div>
+            <!-- <a href=""> -->
+              <div class="button-primary">
+                <a href="">
+                  <p class="support-this-project">
+                    Support this project
+                  </p>
+                </a>
+              </div>
+            <!-- </a> -->
+              <div class="button-secondary">
+                <a href="">
+                  <p class="show-feed">Show Feed</p>
+                </a>
+              </div>
+            <!-- </a> -->
           </div>
           <div class="card-text-links">
             <p class="about-grey-software">
@@ -203,4 +210,5 @@ export default {
   letter-spacing: -0.21px;
   @include inter-14-medium;
 }
+a { color: inherit; text-decoration: none;} 
 </style>
