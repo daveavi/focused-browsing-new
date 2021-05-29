@@ -4,6 +4,5 @@
     "/dist/js/siteStrategy/TwitterStrategy.js": "/dist/js/siteStrategy/TwitterStrategy.js",
     "/dist/js/siteStrategy/LinkedInStrategy.js": "/dist/js/siteStrategy/LinkedInStrategy.js",
     "/dist/js/renderCards/twitter/feed.js": "/dist/js/renderCards/twitter/feed.js",
-    "/dist/js/renderCards/twitter/panel.js": "/dist/js/renderCards/twitter/panel.js",
-    "/dist/css/card.css": "/dist/css/card.css"
+    "/dist/js/renderCards/twitter/panel.js": "/dist/js/renderCards/twitter/panel.js"
 }

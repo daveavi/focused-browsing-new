@@ -1,7 +1,16 @@
 let mix = require("laravel-mix")
 
+var path = require('path')
+
 mix.setPublicPath('./')
-    .sass('src/sass/card.scss', 'dist/css')
+.webpackConfig({
+    resolve: {
+            alias: {
+                '@': path.resolve('src/sass')
+            }
+        }
+    })
+    // .sass('src/sass/app.scss', 'dist/css')
     .js('src/js/background.js', 'dist/js')
     .js('src/js/content.js', 'dist/js')
     .js('src/js/siteStrategy/TwitterStrategy.js', 'dist/js/siteStrategy')

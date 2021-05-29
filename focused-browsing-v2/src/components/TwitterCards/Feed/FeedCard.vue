@@ -1,17 +1,14 @@
 <template>
-  <div class="focus-container">
+  <div class="focus-container-twitter">
     <div class="viewport-card">
-      <!-- <Card Cointainer /> -->
       <div class="card-container">
-        
         <div class="card-main">
-          <!-- <Card Heading/> -->
           <div class="card-heading">
             <div class="card-icon">
               <img
                 alt=""
                 class="vector"
-                src="https://static.overlay-tech.com/assets/eaad4a42-ec43-44da-b9a1-7ac938cbe85c.svg"
+                src="https://static.overlay-tech.com/assets/309ddddd-a123-4f92-b267-ca48fd1d5be4.svg"
               />
             </div>
             <p class="heading">
@@ -24,20 +21,16 @@
             distracting web elements on popular websites on
             the internet.
           </p>
-          <!-- <Button Group/> -->
           <div class="button-group">
-            <!-- <Button Primary /> -->
-            <div class="card-button-primary">
+            <div class="button-primary">
               <p class="support-this-project">
                 Support this project
               </p>
             </div>
-            <!-- <Button Secondary /> -->
-            <div class="card-button-secondary">
+            <div class="button-secondary">
               <p class="show-feed">Show Feed</p>
             </div>
           </div>
-          <!-- <Card Text Links/> -->
           <div class="card-text-links">
             <p class="about-grey-software">
               About Grey Software
@@ -47,7 +40,6 @@
             </p>
           </div>
         </div>
-        <!-- <Quote Container /> -->
         <div class="card-container">
           <p class="quote">
             <strong class="quote-emphasis-0">“ </strong>Amet
@@ -70,72 +62,13 @@
 
 <script>
 export default {
-  name: "FocusContainerTwitterLight"
+  name: "FocusContainerTwitter"
 };
 </script>
 
 <style lang="scss" scoped>
-@import url('https://rsms.me/inter/inter.css');
-
-$black: rgba(19, 19, 19, 1);
-$black-1: rgba(0, 0, 0, 1);
-$black-2: rgba(20, 20, 20, 1);
-$gray: rgba(144, 144, 144, 1);
-$gray-2: rgba(135, 135, 135, 1);
-$gray-3: rgba(129, 132, 137, 1);
-$lavender: rgba(231, 234, 238, 1);
-$light-steel-blue: rgba(188, 178, 255, 1);
-$orange: rgba(255, 182, 29, 1);
-$primary-1: rgba(45, 108, 223, 1);
-$transparent-black: rgba(19, 19, 19, 0.15);
-$white: rgba(255, 255, 255, 1);
-$white-2: rgba(254, 254, 254, 1);
-
-// Typographies
-@mixin inter-12-medium {
-  font-family: "Inter";
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 18px;
-}
-@mixin inter-14-medium {
-  font-family: "Inter";
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 21px;
-}
-@mixin inter-14-regular {
-  font-family: "Inter";
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 21px;
-}
-@mixin inter-14-semi-bold {
-  font-family: "Inter";
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 21px;
-}
-@mixin inter-16-regular {
-  font-family: "Inter";
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 24px;
-}
-@mixin inter-18-medium {
-  font-family: "Inter";
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 27px;
-}
-@mixin inter-18-regular {
-  font-family: "Inter";
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 27px;
-}
-
-.focus-container {
+@import '@/abstracts/_variables.scss';
+.focus-container-twitter {
   background-color: $white;
   padding: 59px 0 60px;
   display: flex;
@@ -204,7 +137,7 @@ $white-2: rgba(254, 254, 254, 1);
   flex-direction: column;
   align-items: flex-start;
 }
-.card-button-primary {
+.button-primary {
   background-color: $primary-1;
   margin-bottom: 16px;
   overflow: hidden;
@@ -220,7 +153,7 @@ $white-2: rgba(254, 254, 254, 1);
   letter-spacing: -0.21px;
   @include inter-14-semi-bold;
 }
-.card-button-secondary {
+.button-secondary {
   overflow: hidden;
   border-radius: 8px;
   padding: 13px 116px 12px 115px;
