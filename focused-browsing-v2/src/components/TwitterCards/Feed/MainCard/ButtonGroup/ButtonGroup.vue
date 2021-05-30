@@ -15,11 +15,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.button-group {
-  margin-bottom: 33px;
-  margin-left: 19px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
+
 </style>

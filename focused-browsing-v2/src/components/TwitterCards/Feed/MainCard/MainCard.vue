@@ -23,30 +23,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/abstracts/_variables.scss';
-
-.card-main {
-  background-color: $white;
-  margin-bottom: 42px;
-  overflow: hidden;
-  border-radius: 16px;
-  padding: 32px 44px 34px;
-  box-shadow: 0 4px 12px 0 $transparent-black;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  height: 404px;
-  width: 344px;
-}
-
-.card-subtitle {
-  height: 60px;
-  width: 344px;
-  color: $gray;
-  display: flex;
-  text-align: center;
-  margin-bottom: 42px;
-  letter-spacing: -0.21px;
-  @include inter-14-regular;
-}
 </style>

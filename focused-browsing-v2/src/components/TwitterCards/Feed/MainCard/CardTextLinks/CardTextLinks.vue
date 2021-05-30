@@ -31,26 +31,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/abstracts/_variables.scss';
-
-.card-text-links {
-  margin-left: 15px;
-  display: flex;
-  align-items: flex-start;
-}
-
-.about{
-  color: $gray-2;
-  text-align: center;
-  text-decoration: underline;
-  letter-spacing: -0.18px;
-  @include inter-12-medium;
-  &:not(:last-of-type) {
-    margin-right: 48px;
-  }
-}
-.about-grey {
-  margin-right:40px
-}
-a { color: inherit; text-decoration: none;} 
 </style>

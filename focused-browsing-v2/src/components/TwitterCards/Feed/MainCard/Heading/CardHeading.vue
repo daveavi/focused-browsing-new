@@ -21,28 +21,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/abstracts/_variables.scss';
-
-.card-heading {
-  margin-bottom: 12px;
-  margin-left: 43px;
-  display: flex;
-  align-items: center;
-}
-.card-icon {
-  margin-right: 7px;
-  padding: 1.54px 1px 1.53px;
-  display: flex;
-  align-items: center;
-}
-.vector {
-  flex: 1;
-  align-self: stretch;
-  object-fit: cover;
-}
-.heading {
-  color: $primary-1;
-  letter-spacing: -0.27px;
-  @include inter-18-medium;
-}
 </style>

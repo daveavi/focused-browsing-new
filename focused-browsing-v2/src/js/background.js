@@ -72,10 +72,8 @@ function toggleFocusListener(command,tab) {
         toggleFocus("twitter","toggle")
       }else{
         toggleFocus("twitter","hidePanels")
-
       }
-
-    }else if (url === "https://www.linkedin.com/feed/") {
+    }else if (url === "https://www.linkedin.com/feed/"){
       console.log("sending message to linkedin")
       toggleFocus("linkedin","toggle")
     }

@@ -19,7 +19,7 @@ export default {
     }
   },
 
-  mounted() {
+  created() {
     this.setQuote()
   },
 
@@ -37,33 +37,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "@/abstracts/_variables.scss";
-.quote-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding-left: 10px;
-}
-.quote {
-  height: 53.52%;
-  align-self: stretch;
-  display: flex;
-  text-align: center;
-  margin-bottom: 12px;
-  color: $gray;
-  @include inter-14-regular;
-}
-.quote-emphasis-0 {
-  color: $black;
-  letter-spacing: -0.21px;
-  @include inter-14-regular;
-}
-.quoter {
-  width: 48.84%;
-  height: 29.58%;
-  color: $black-1;
-  margin-left: 216px;
-  letter-spacing: -0.21px;
-  @include inter-14-medium;
-}
+
 </style>

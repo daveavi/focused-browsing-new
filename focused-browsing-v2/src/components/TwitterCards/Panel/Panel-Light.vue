@@ -44,7 +44,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import url('https://rsms.me/inter/inter.css');
-
 
 </style>

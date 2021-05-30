@@ -21,23 +21,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/abstracts/_variables.scss';
-.focus-container-twitter {
-  background-color: $white;
-  padding: 0px 0 60px;
-  display: flex;
-  align-items: center;
-}
-.viewport-card {
-  background-color: $white;
-  padding: 54px 84px 76px 83px;
-  display: flex;
-  align-items: flex-start;
-}
-.card-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-a { color: inherit; text-decoration: none;} 
 </style>
