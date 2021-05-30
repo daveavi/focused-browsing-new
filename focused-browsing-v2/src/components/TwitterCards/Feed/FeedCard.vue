@@ -39,5 +39,5 @@ export default {
   flex-direction: column;
   align-items: flex-start;
 }
-
+a { color: inherit; text-decoration: none;} 
 </style>

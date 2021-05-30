@@ -1,13 +1,32 @@
 <template>
   <div class="card-text-links">
-    <p class="about">About Grey Software</p>
-    <p class="about">About Focused Browsing</p>
+    <a href="" @click="openGrey" class="about-grey"> 
+      <p class="about">About Grey Software</p>
+    </a>
+    
+    <a href="" @click="openFocusedBrowsing">
+      <p class="about">About Focused Browsing</p>
+    </a>
   </div>
 </template>
 
 <script>
 export default {
-  name: "CardTextLinks"
+  name: "CardTextLinks",
+  data () {
+    return{
+
+    }
+  }, 
+  methods: {
+    openGrey(){
+      window.open("https://org.grey.software/");
+    },
+    openFocusedBrowsing(){
+      window.open("https://hackmd.io/mSFA7Bh_QNivFQmDJsNP6Q")
+    }
+
+  }
 };
 </script>
 
@@ -30,4 +49,8 @@ export default {
     margin-right: 48px;
   }
 }
+.about-grey {
+  margin-right:40px
+}
+a { color: inherit; text-decoration: none;} 
 </style>
