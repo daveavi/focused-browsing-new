@@ -35,7 +35,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  height: 304px;
+  height: 404px;
   width: 344px;
 }
 

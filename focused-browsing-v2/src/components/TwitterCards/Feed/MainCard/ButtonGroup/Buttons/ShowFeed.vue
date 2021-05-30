@@ -1,16 +1,28 @@
 <template>
-  <div class="button-show-feed">
-    <a href="">
-      <p class="show-feed-text">
-        Show Feed
-      </p>
-    </a>
-  </div>
+  <a href="" @click="showFeed">
+    <div class="button-show-feed">
+        <p class="show-feed-text">
+          Show Feed
+        </p>
+    </div>
+  </a>
 </template>
 
 <script>
 export default {
-  name: "ShowFeed"
+  name: "ShowFeed",
+  data () {
+    return{
+
+    }
+  }, 
+  methods: {
+    showFeed(){
+      chrome.runtime.sendMessage({status: "focus"}, function(response) {
+          console.log(response.farewell);
+      });
+    }
+  }
 };
 </script>
 
@@ -25,9 +37,15 @@ export default {
   height: 21px;
   width: 73px;
   border: 1px solid $black;
-}
-.show-feed-text {
   color: $black;
+}
+
+// .button-show-feed:hover{
+//     background-color: $primary-1;
+//     color: $white
+// }
+.show-feed-text {
+  // color: $black;
   letter-spacing: -0.21px;
   @include inter-14-semi-bold;
 }

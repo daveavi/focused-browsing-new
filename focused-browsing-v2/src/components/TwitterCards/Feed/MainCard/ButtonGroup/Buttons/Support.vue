@@ -1,16 +1,26 @@
 <template>
-  <div class="button-support">
-    <a href="">
-      <p class="support-this-project">
-        Support this project
-      </p>
-    </a>
-  </div>
+  <a href="" @click="openSupport">
+    <div class="button-support">
+        <p class="support-this-project">
+          Support this project
+        </p>
+    </div>
+  </a>
 </template>
 
 <script>
 export default {
-  name: "Support"
+  name: "Support",
+  data () {
+    return{
+
+    }
+  }, 
+  methods: {
+    openSupport(){
+      window.open("https://github.com/sponsors/grey-software");
+    }
+  }
 };
 </script>
 
@@ -26,9 +36,14 @@ export default {
   align-items: center;
   height: 21px;
   width: 132px;
-}
-.support-this-project {
   color: $white-2;
+}
+
+// .button-support:hover{
+//     background-color: $white;
+//     color: $black;
+// }
+.support-this-project {
   letter-spacing: -0.21px;
   @include inter-14-semi-bold;
 }

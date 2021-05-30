@@ -42,6 +42,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  padding-left: 10px;
 }
 .quote {
   height: 53.52%;
