@@ -15,7 +15,7 @@ import MainCard from './MainCard/MainCard.vue'
 import Quote from './Quote/Quote.vue'
 
 export default {
-  name: "FeedCard",
+  name: "FocusedFeedContainer",
   components: { MainCard, Quote }
 };
 </script>

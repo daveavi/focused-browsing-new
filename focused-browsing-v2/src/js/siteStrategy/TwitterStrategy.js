@@ -1,57 +1,83 @@
+const TwitterUtils = require("./TwitterUtils.js")
+
 export default class TwitterStrategy {
 
-    constructor(feedIframe,panelIframe){
+
+    constructor(){
         this.PANEL_ELEMENTS = []
         this.TWITTER_FEED_PARENT_NODE = null
         this.TWITTER_FEED_CHILD_NODE = null
-        this.TWITTER_FEED_CLASS = ""
+       
         this.feedIntervalId = 0
         this.pageInterval = 0
         this.initialLoad = false
-        this.feedIframe = feedIframe
-        this.panelIframe = panelIframe
+        this.TWITTER_FEED_FRAME_HEIGHT = "4000px";
+        this.TWITTER_FEED_FRAME_WIDTH = "598px";
+
+        this.TWITTER_PANEL_FRAME_HEIGHT = "4000px";
+        this.TWITTER_PANEL_FRAME_WIDTH = "350px";
+        this.IFRAME_ClASS = "focus-card";
+
+        let iframes = this.initIframeTwitter()
+        this.feedIframe = iframes[0]
+        this.panelIframe = iframes[1]
+
     }
+
+
+
+    initIframeTwitter() {
+      let feedIframe = document.createElement("iframe")
+      let panelIframe = document.createElement("iframe")
+  
+      feedIframe.width = this.TWITTER_FEED_FRAME_WIDTH;
+      feedIframe.height = this.TWITTER_FEED_FRAME_HEIGHT;
+      feedIframe.className = this.IFRAME_ClASS;
+  
+      panelIframe.width = this.TWITTER_PANEL_FRAME_WIDTH;
+      panelIframe.height = this.TWITTER_PANEL_FRAME_HEIGHT;
+      panelIframe.className = this.IFRAME_ClASS;
+  
+      Object.assign(feedIframe.style, {
+          position: "fixed",
+          border: "none",
+      });
   
 
-    getTwitterFeed(){
-        return document.querySelectorAll('[role="main"]')[0].children[0].children[0]
-        .children[0].children[0].children[0].children[3] 
-    }
-      
-    getTwitterPanel(){
-        return document.querySelectorAll('[role="main"]')[0].children[0].children[0]
-        .children[0].children[1].children[0].children[1].children[0].children[0]
-        .children[0]
-    }
-      
-      
-    hasTwitterPanelLoaded(){
-        let panel = this.getTwitterPanel()
-        return panel.children.length == 5 || panel.children.length == 2
-    }
-      
-      
-    getTwitterFeedClassName() {
-        let feed = this.getTwitterFeed()
-        if(feed != null){
-          return feed.className
-        }else{
-          throw 'feed class name not found!';
-        }
-    }
+  
+      Object.assign(panelIframe.style, {
+        position: "fixed",
+        border: "none",
+      });
+  
+  
+      return [feedIframe, panelIframe]
+  }
 
+    clearPanelElements(){
+      this.PANEL_ELEMENTS = []
+    }
+  
     setPanelElements(PANEL_ELEMENTS){
         this.PANEL_ELEMENTS = PANEL_ELEMENTS
     }
 
-    homePageTwitterHasLoaded() {
-        return this.getTwitterPanel() && this.getTwitterFeed()
-    }
-    
     
     focusTwitterPanel(){
         this.pageInterval = setInterval(this.tryBlockingTwitterPanel.bind(this), 700);
     }
+
+    setIframeSource(){
+      if(document.body.style.backgroundColor == "rgb(0, 0, 0)" || document.body.style.backgroundColor == "rgb(21, 32, 43)"){
+        console.log("Setting dark mode cards")
+        this.feedIframe.src = chrome.runtime.getURL("www/twitter/twitterFeedDark.html")
+        this.panelIframe.src = chrome.runtime.getURL("www/twitter/twitterPanelDark.html");
+      }else{
+        this.feedIframe.src = chrome.runtime.getURL("www/twitter/twitterFeed.html")
+        this.panelIframe.src = chrome.runtime.getURL("www/twitter/twitterPanel.html");
+      }
+    }
+
 
     focusTwitter() {
         console.log("setting interval to block twitter")
@@ -71,6 +97,7 @@ export default class TwitterStrategy {
           if (shouldHide) {
             this.hideTwitterFeed(true)
             this.hideTwitterPanel(true)
+            this.setIframeSource()
             this.injectCards("home")
           } else {
             this.hideTwitterFeed(false)
@@ -86,21 +113,13 @@ export default class TwitterStrategy {
 
     hideTwitterFeed(shouldhide){
         // console.log("want to hide feed")
+
+
         if(shouldhide){
           console.log("want to hide feed")
-          if(this.TWITTER_FEED_CLASS == ""){
-            console.log("FEED CLASS name is "+ this.TWITTER_FEED_CLASS)
-            this.TWITTER_FEED_CLASS = this.getTwitterFeedClassName()
-            console.log("NOW FEED CLASS name is "+ this.TWITTER_FEED_CLASS)
-          }
-
-          this.TWITTER_FEED_PARENT_NODE = document.getElementsByClassName(
-            this.TWITTER_FEED_CLASS
-          )[1]
+          this.TWITTER_FEED_PARENT_NODE = TwitterUtils.getTwitterFeed()
       
-          this.TWITTER_FEED_CHILD_NODE = document.getElementsByClassName(
-            this.TWITTER_FEED_CLASS
-          )[1].children[0]
+          this.TWITTER_FEED_CHILD_NODE = this.TWITTER_FEED_PARENT_NODE.children[0]
       
           this.TWITTER_FEED_PARENT_NODE.removeChild(this.TWITTER_FEED_PARENT_NODE.childNodes[0])
       
@@ -113,7 +132,7 @@ export default class TwitterStrategy {
       
     hideTwitterPanel(shouldHide){
       
-        let PANEL = this.getTwitterPanel()
+        let PANEL = TwitterUtils.getTwitterPanel()
         if(shouldHide){
           let length = PANEL.children.length
 
@@ -123,7 +142,7 @@ export default class TwitterStrategy {
             PANEL.removeChild(currentLastChild)
             length -= 1 
           }
-
+          this.setIframeSource()
           this.injectCards("panel")
 
         }else{
@@ -150,7 +169,7 @@ export default class TwitterStrategy {
         } else {
           console.log("distractions are not hidden")
           try {
-            if (this.homePageTwitterHasLoaded()) {
+            if (TwitterUtils.homePageTwitterHasLoaded()) {
                 console.log("here in blocking twitter")
                 this.toggleTwitterHomeDistractions(true);
             }
@@ -170,7 +189,7 @@ export default class TwitterStrategy {
           return
         } else {
           try {
-            if (this.hasTwitterPanelLoaded()) {
+            if (TwitterUtils.hasTwitterPanelLoaded()) {
                 console.log("here in blocking twitter panel")
                 this.hideTwitterPanel(true);
             }
@@ -184,13 +203,10 @@ export default class TwitterStrategy {
     distractionsHidden(isHomePage) {
         try{
             console.log("I am in the distractions function")
-            let PANEL = this.getTwitterPanel()
+            let PANEL = TwitterUtils.getTwitterPanel()
             console.log(PANEL)
             if (isHomePage == "home") {
-                let FEED = this.getTwitterFeed()
-                console.log("Feed is")
-                console.log(FEED)
-                console.log(FEED.children)
+                let FEED = TwitterUtils.getTwitterFeed()
                 return FEED.children[0].nodeName == "IFRAME" && PANEL.children.length == 2;
             } else {
                 return PANEL.children.length == 2;
@@ -205,7 +221,7 @@ export default class TwitterStrategy {
         if(page == "home"){
           this.TWITTER_FEED_PARENT_NODE.append(this.feedIframe)
         }
-        let PANEL = this.getTwitterPanel()
+        let PANEL = TwitterUtils.getTwitterPanel()
         PANEL.append(this.panelIframe)
     }
 

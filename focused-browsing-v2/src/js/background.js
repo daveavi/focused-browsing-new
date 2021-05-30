@@ -10,20 +10,6 @@ chrome.runtime.onConnect.addListener(function (connectionPort) {
 });
 
 
-// chrome.tabs.onActivated.addListener(function(activeInfo, tab) {
-//   chrome.tabs.getSelected(null,function(tab) {
-//     let url = tab.url;
-//     if(url){
-//       if(url.includes("twitter.com") && focusMode["twitter"].focus){
-//         console.log("new tab url is: "+ url)
-//         if(isURLTwitterHome(url)){
-//           sendStatus("twitter","focus","tab")
-//         }
-//       }
-//     }
-    
-//   });
-// });
 
 
 function tabListener(tabId, changeInfo, tab){
@@ -35,7 +21,7 @@ function tabListener(tabId, changeInfo, tab){
         if(focusMode["twitter"].focus){
           if (isURLTwitterHome(url)){
             sendStatus("twitter","focus","initial")
-          }else if(url != "https://twitter.com/"){
+          }else if(url != "https://twitter.com/" & !url.includes("/i/display")){
             sendStatus("twitter","focus", "hidePanels")
           } 
           activeURL = url

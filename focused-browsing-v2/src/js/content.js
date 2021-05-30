@@ -20,11 +20,9 @@ var twitterStrategy, linkedInStrategy;
   port = chrome.runtime.connect({name: "Focused Browsing"});
   port.onMessage.addListener(focusListener)
 
-  let twitterCards = initIframeTwitter()
-  let feedIframe = twitterCards[0]
-  let panelIframe = twitterCards[1]
 
-  twitterStrategy = new TwitterStrategy(feedIframe, panelIframe)
+
+  twitterStrategy = new TwitterStrategy()
   // linkedInStrategy = new LinkedInStrategy()
 })()
 
@@ -35,6 +33,7 @@ function focusListener(msg) {
   let url = msg.url
   if (status == "focus"){
      if (url.includes("twitter")) {
+          twitterStrategy.clearPanelElements()
           if(method == "initial"){
              twitterStrategy.focusTwitter();
             //  twitterStrategy.injectCards("home")
@@ -66,37 +65,6 @@ function focusListener(msg) {
 }
 
 
-
-function initIframeTwitter() {
-    let feedIframe = document.createElement("iframe")
-    let panelIframe = document.createElement("iframe")
-
-    feedIframe.width = TWITTER_FEED_FRAME_WIDTH;
-    feedIframe.height = TWITTER_FEED_FRAME_HEIGHT;
-    feedIframe.className = IFRAME_ClASS;
-
-    panelIframe.width = TWITTER_PANEL_FRAME_WIDTH;
-    panelIframe.height = TWITTER_PANEL_FRAME_HEIGHT;
-    panelIframe.className = IFRAME_ClASS;
-
-    Object.assign(feedIframe.style, {
-        position: "fixed",
-        border: "none",
-    });
-
-
-    Object.assign(panelIframe.style, {
-      position: "fixed",
-      border: "none",
-    });
-
-
-
-    feedIframe.src = chrome.runtime.getURL("www/twitter/twitterFeed.html");
-    panelIframe.src = chrome.runtime.getURL("www/twitter/twitterPanel.html")
-
-    return [feedIframe, panelIframe]
-}
 
 
 function removeCards(){
