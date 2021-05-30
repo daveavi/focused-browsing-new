@@ -15,9 +15,11 @@ export default {
 @import '@/abstracts/_variables.scss';
 
 .card-text-links {
+  margin-left: 15px;
   display: flex;
   align-items: flex-start;
 }
+
 .about{
   color: $gray-2;
   text-align: center;

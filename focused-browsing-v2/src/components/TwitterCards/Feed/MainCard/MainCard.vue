@@ -1,6 +1,6 @@
 <template>
   <div class="card-main">
-    <CardHeading />
+    <CardHeading  />
     <p class="card-subtitle">
       This web extension helps you focus on your creative
       and professional goals by hiding distracting web
@@ -27,6 +27,7 @@ export default {
 
 .card-main {
   background-color: $white;
+  margin-bottom: 42px;
   overflow: hidden;
   border-radius: 16px;
   padding: 32px 44px 34px;
@@ -34,7 +35,10 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  height: 304px;
+  width: 344px;
 }
+
 .card-subtitle {
   height: 60px;
   width: 344px;
