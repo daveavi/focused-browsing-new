@@ -65,7 +65,6 @@ export default class TwitterStrategy {
       if(document.body.style.backgroundColor == "rgb(0, 0, 0)"){
         this.feedIframe.src = chrome.runtime.getURL("www/twitter/feed/twitterFeedDark.html")
       }else if(document.body.style.backgroundColor == "rgb(21, 32, 43)"){
-        console.log("Setting dark mode cards")
         this.feedIframe.src = chrome.runtime.getURL("www/twitter/feed/twitterFeedDim.html")
       }else{
         this.feedIframe.src = chrome.runtime.getURL("www/twitter/feed/twitterFeed.html")
@@ -82,7 +81,6 @@ export default class TwitterStrategy {
 
 
     focusTwitter() {
-        console.log("setting interval to block twitter")
         if (!this.initialLoad) {
           this.feedIntervalId = setInterval(this.tryBlockingTwitterHome.bind(this), 500);
           this.initialLoad = !this.initialLoad
@@ -93,8 +91,6 @@ export default class TwitterStrategy {
       
 
     toggleTwitterHomeDistractions(shouldHide) {
-        console.log("here we are in toggle twitter distraction")
-        console.log("should hide is: " + shouldHide)
         try {
           if (shouldHide) {
             this.hideTwitterFeed(true)
@@ -103,28 +99,22 @@ export default class TwitterStrategy {
           } else {
             this.hideTwitterFeed(false)
             this.hideTwitterPanel(false)
-            // removeIframe()
           }
         } catch (err) {
-          console.log(err);
+
         }
     }
 
   
 
     hideTwitterFeed(shouldhide){
-        // console.log("want to hide feed")
-
-        
         let FEED =  TwitterUtils.getTwitterFeed()
         if(shouldhide){
-          console.log("want to hide feed")
           this.TWITTER_FEED_CHILD_NODE = FEED.children[0]
       
           FEED.removeChild(FEED.childNodes[0])
       
         }else{
-          console.log("want to show feed")
           FEED.append(this.TWITTER_FEED_CHILD_NODE)
         }
     }
@@ -157,43 +147,31 @@ export default class TwitterStrategy {
 
 
     tryBlockingTwitterHome() {
-        console.log("we are trying to block twitter home")
-        // console.log(this.distractionsHidden("home"))
         if (this.distractionsHidden("home")) {
-          console.log("we can clear the interval")
-          console.log(this.feedIntervalId)
           clearInterval(this.feedIntervalId);
           this.initialLoad = false;
           return
         } else {
-          console.log("distractions are not hidden")
           try {
             if (TwitterUtils.homePageTwitterHasLoaded()) {
-                console.log("here in blocking twitter")
                 this.toggleTwitterHomeDistractions(true);
             }
           } catch (err) {
-            console.log(err)
-            console.log("Feed hasn't been loaded yet");
+            
           }
         }
     }
 
     tryBlockingTwitterPanel() {
-        console.log("we are trying to block twitter panel")
         if (this.distractionsHidden("panel")) {
-          console.log("we can clear the interval")
-          console.log(this.pageInterval)
           clearInterval(this.pageInterval);
           return
         } else {
           try {
             if (TwitterUtils.hasTwitterPanelLoaded()) {
-                console.log("here in blocking twitter panel")
                 this.hideTwitterPanel(true);
             }
           } catch (err) {
-            console.log("Panel hasn't been loaded yet");
           }
         }
     }
@@ -201,9 +179,7 @@ export default class TwitterStrategy {
       
     distractionsHidden(isHomePage) {
         try{
-            console.log("I am in the distractions function")
             let PANEL = TwitterUtils.getTwitterPanel()
-            console.log(PANEL)
             if (isHomePage == "home") {
                 let FEED = TwitterUtils.getTwitterFeed()
                 return FEED.children[0].nodeName == "IFRAME" && PANEL.children.length == 2;
@@ -211,7 +187,6 @@ export default class TwitterStrategy {
                 return PANEL.children.length == 2;
             }
         }catch(err){
-            // console.log(err)
         }
     }
 
