@@ -1,7 +1,7 @@
 <template>
   <a href="" @click="showFeed">
     <div class="button-show-feed">
-        <p class="show-feed-text">
+        <p class="show-feed">
           Show Feed
         </p>
     </div>

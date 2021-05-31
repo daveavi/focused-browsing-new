@@ -8,7 +8,7 @@ const IFRAME_ClASS = "focus-card";
 
 
 import TwitterStrategy from './siteStrategy/TwitterStrategy'
-import LinkedInStrategy from './siteStrategy/LinkedInStrategy'
+// import LinkedInStrategy from './siteStrategy/LinkedInStrategy'
 
 var port; 
 var twitterStrategy, linkedInStrategy;

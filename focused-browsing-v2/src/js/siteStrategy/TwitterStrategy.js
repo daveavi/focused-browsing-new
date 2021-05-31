@@ -10,7 +10,7 @@ export default class TwitterStrategy {
         this.feedIntervalId = 0
         this.pageInterval = 0
         this.initialLoad = false
-        this.TWITTER_FEED_FRAME_HEIGHT = "4000px";
+        this.TWITTER_FEED_FRAME_HEIGHT = "1000px";
         this.TWITTER_FEED_FRAME_WIDTH = "598px";
 
         this.TWITTER_PANEL_FRAME_HEIGHT = "4000px";
@@ -56,24 +56,27 @@ export default class TwitterStrategy {
     clearPanelElements(){
       this.PANEL_ELEMENTS = []
     }
-  
-    setPanelElements(PANEL_ELEMENTS){
-        this.PANEL_ELEMENTS = PANEL_ELEMENTS
-    }
-
     
     focusTwitterPanel(){
         this.pageInterval = setInterval(this.tryBlockingTwitterPanel.bind(this), 700);
     }
 
-    setIframeSource(){
-      if(document.body.style.backgroundColor == "rgb(0, 0, 0)" || document.body.style.backgroundColor == "rgb(21, 32, 43)"){
+    setFeedIframeSource(){
+      if(document.body.style.backgroundColor == "rgb(0, 0, 0)"){
+        this.feedIframe.src = chrome.runtime.getURL("www/twitter/feed/twitterFeedDark.html")
+      }else if(document.body.style.backgroundColor == "rgb(21, 32, 43)"){
         console.log("Setting dark mode cards")
-        this.feedIframe.src = chrome.runtime.getURL("www/twitter/twitterFeedDark.html")
-        this.panelIframe.src = chrome.runtime.getURL("www/twitter/twitterPanelDark.html");
+        this.feedIframe.src = chrome.runtime.getURL("www/twitter/feed/twitterFeedDim.html")
       }else{
-        this.feedIframe.src = chrome.runtime.getURL("www/twitter/twitterFeed.html")
-        this.panelIframe.src = chrome.runtime.getURL("www/twitter/twitterPanel.html");
+        this.feedIframe.src = chrome.runtime.getURL("www/twitter/feed/twitterFeed.html")
+      }
+    }
+
+    setPanelIframeSource(){
+      if(document.body.style.backgroundColor == "rgb(0, 0, 0)" || document.body.style.backgroundColor == "rgb(21, 32, 43)"){
+        this.panelIframe.src = chrome.runtime.getURL("www/twitter/panel/twitterPanelDark.html")
+      }else{
+        this.panelIframe.src = chrome.runtime.getURL("www/twitter/panel/twitterPanel.html")
       }
     }
 
@@ -96,7 +99,6 @@ export default class TwitterStrategy {
           if (shouldHide) {
             this.hideTwitterFeed(true)
             this.hideTwitterPanel(true)
-            this.setIframeSource()
             this.injectCards("home")
           } else {
             this.hideTwitterFeed(false)
@@ -140,14 +142,13 @@ export default class TwitterStrategy {
             PANEL.removeChild(currentLastChild)
             length -= 1 
           }
-          this.setIframeSource()
           this.injectCards("panel")
 
         }else{
           for(let i =0; i<this.PANEL_ELEMENTS.length; i+=1){
             PANEL.append(this.PANEL_ELEMENTS[i])
           }
-          this.PANEL_ELEMENTS = []
+          this.clearPanelElements()
       
         }
     }
@@ -216,8 +217,9 @@ export default class TwitterStrategy {
 
 
     injectCards(page) {
-      
+        this.setPanelIframeSource()
         if(page == "home"){
+          this.setFeedIframeSource()
           let FEED =  TwitterUtils.getTwitterFeed()
           FEED.append(this.feedIframe)
         }

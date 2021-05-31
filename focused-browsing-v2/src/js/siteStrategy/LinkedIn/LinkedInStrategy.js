@@ -1,8 +1,7 @@
+const LinkedInUtils = require("./LinkedInUtils.js")
 export default class LinkedInStrategy {
     constructor(feedIframe,panelIframe){
         this.PANEL_ELEMENTS = [] 
-        this.LINKEDIN_FEED_CLASS = "scaffold-layout__main"
-        this.PANEL_CLASS = "scaffold-layout__aside"
         this.feedIntervalId = 0
         this.pageInterval = 0
         this.initialLoad = false;
@@ -31,7 +30,7 @@ export default class LinkedInStrategy {
     }
 
     homePageLinkedInHasLoaded() {
-        return this.hasLinkedInPanelLoaded() && this.getLinkedInFeed()
+        return LinkedInUtils.hasLinkedInPanelLoaded() && LinkedInUtils.getLinkedInFeed()
     }
 
     focusLinkedIn() {
@@ -56,7 +55,7 @@ export default class LinkedInStrategy {
         } else {
           console.log("distractions are not hidden")
           try {
-            if (this.homePageLinkedInHasLoaded()) {
+            if (LinkedInUtils.homePageLinkedInHasLoaded()) {
                 console.log("here in blocking LINKEDIN")
                 this.toggleLinkedInHomeDistractions(true);
             }
@@ -86,7 +85,7 @@ export default class LinkedInStrategy {
     hideLinkedInFeed(shouldHide){
         if(shouldHide){
             console.log("here trying to hide lInkedin FEED")
-            this.LINKEDIN_FEED_PARENT_NODE = this.getLinkedInFeed()
+            this.LINKEDIN_FEED_PARENT_NODE = LinkedInUtils.getLinkedInFeed()
 
             this.LINKEDIN_FEED_CHILD_NODE = this.LINKEDIN_FEED_PARENT_NODE.children[1]
             console.log(this.LINKEDIN_FEED_CHILD_NODE)
@@ -98,7 +97,7 @@ export default class LinkedInStrategy {
     }
 
     hideLinkedInPanel(shouldHide){
-        let PANEL = this.getLinkedInPanel()
+        let PANEL = LinkedInUtils.getLinkedInPanel()
         if(shouldHide){
           let length = PANEL.children.length
           console.log(PANEL.children)
@@ -120,10 +119,10 @@ export default class LinkedInStrategy {
     distractionsHidden(isHome){
         try{
             console.log("I am in the distractions function")
-            let PANEL = this.getLinkedInPanel()
+            let PANEL = LinkedInUtils.getLinkedInPanel()
             console.log(PANEL)
             if (isHome == "home") {
-                let FEED = this.getLinkedInFeed()
+                let FEED = LinkedInUtils.getLinkedInFeed()
                 // return FEED.children[0].nodeName == "IFRAME" && PANEL.children.length == 1;
                 return FEED.children.length == 2 && PANEL.children.length == 0;
             } else {

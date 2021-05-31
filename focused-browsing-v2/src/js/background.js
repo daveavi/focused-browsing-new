@@ -28,7 +28,9 @@ function tabListener(tabId, changeInfo, tab){
         }
     } else if (url.includes("linkedin.com")) {
         if(focusMode["linkedin"].focus){
-          sendStatus("linkedin","focus","tab")
+          if(isURLLinkedInHome(url)){
+            sendStatus("linkedin","focus","tab")
+          }
         }
     }
   }
@@ -43,6 +45,10 @@ chrome.tabs.onUpdated.addListener(tabListener);
 
 function isURLTwitterHome(url){
   return url === "https://twitter.com/home" 
+}
+
+function isURLLinkedInHome(url){
+  return url === "https://linkedin.com/feed"
 }
 
 
