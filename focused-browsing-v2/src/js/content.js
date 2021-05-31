@@ -6,9 +6,6 @@ import TwitterStrategy from './siteStrategy/Twitter/TwitterStrategy'
 var port; 
 var twitterStrategy
 
-
-
-
 ;(function () {
   port = chrome.runtime.connect({name: "Focused Browsing"});
   port.onMessage.addListener(focusListener)
