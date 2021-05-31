@@ -1,7 +1,7 @@
 const IFRAME_ClASS = "focus-card";
 
 
-import TwitterStrategy from './siteStrategy/TwitterStrategy'
+import TwitterStrategy from './siteStrategy/Twitter/TwitterStrategy'
 
 var port; 
 var twitterStrategy
