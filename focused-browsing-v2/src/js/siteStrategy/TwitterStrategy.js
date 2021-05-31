@@ -5,7 +5,6 @@ export default class TwitterStrategy {
 
     constructor(){
         this.PANEL_ELEMENTS = []
-        this.TWITTER_FEED_PARENT_NODE = null
         this.TWITTER_FEED_CHILD_NODE = null
        
         this.feedIntervalId = 0
@@ -114,18 +113,17 @@ export default class TwitterStrategy {
     hideTwitterFeed(shouldhide){
         // console.log("want to hide feed")
 
-
+        
+        let FEED =  TwitterUtils.getTwitterFeed()
         if(shouldhide){
           console.log("want to hide feed")
-          this.TWITTER_FEED_PARENT_NODE = TwitterUtils.getTwitterFeed()
+          this.TWITTER_FEED_CHILD_NODE = FEED.children[0]
       
-          this.TWITTER_FEED_CHILD_NODE = this.TWITTER_FEED_PARENT_NODE.children[0]
-      
-          this.TWITTER_FEED_PARENT_NODE.removeChild(this.TWITTER_FEED_PARENT_NODE.childNodes[0])
+          FEED.removeChild(FEED.childNodes[0])
       
         }else{
           console.log("want to show feed")
-          this.TWITTER_FEED_PARENT_NODE.append(this.TWITTER_FEED_CHILD_NODE)
+          FEED.append(this.TWITTER_FEED_CHILD_NODE)
         }
     }
       
@@ -218,8 +216,10 @@ export default class TwitterStrategy {
 
 
     injectCards(page) {
+      
         if(page == "home"){
-          this.TWITTER_FEED_PARENT_NODE.append(this.feedIframe)
+          let FEED =  TwitterUtils.getTwitterFeed()
+          FEED.append(this.feedIframe)
         }
         let PANEL = TwitterUtils.getTwitterPanel()
         PANEL.append(this.panelIframe)
