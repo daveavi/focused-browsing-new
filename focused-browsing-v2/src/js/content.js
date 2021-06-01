@@ -2,16 +2,18 @@ const IFRAME_ClASS = "focus-card";
 
 
 import TwitterStrategy from './siteStrategy/Twitter/TwitterStrategy'
+import TwitterUtils from './siteStrategy/Twitter/TwitterUtils'
 
 var port;
 var twitterStrategy
 
-  ; (function () {
+;(function () {
     port = chrome.runtime.connect({ name: "Focused Browsing" });
     port.onMessage.addListener(focusListener)
-    twitterStrategy = new TwitterStrategy()
+    TwitterUtils.sendLogToBackground(port, "USER SESSION STARTED")
+    twitterStrategy = new TwitterStrategy(port)
 
-  })()
+})()
 
 function focusListener(msg) {
   let status = msg.status
@@ -51,7 +53,6 @@ function removeCards() {
       el.remove()
     });
   } catch (err) {
-    console.log("the iframe is not on the screen")
+    TwitterUtils.sendLogToBackground(port,"CURRENTLY NO IFRAMES ON THE SCREEN")
   }
 }
-

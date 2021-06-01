@@ -30,5 +30,12 @@ function homePageTwitterHasLoaded() {
     return getTwitterPanel() && getTwitterFeed()
 }
 
+function sendLogToBackground(port, log){
+    // chrome.runtime.sendMessage({status: "error log", message: log}, function(response){
+    //     console.log(response)
+    // });
+    port.postMessage({event: "log", log: log})
+}
 
-module.exports = { homePageTwitterHasLoaded, getTwitterFeedClassName, hasTwitterPanelLoaded, getTwitterPanel, getTwitterFeed }
+
+module.exports = { homePageTwitterHasLoaded, getTwitterFeedClassName, hasTwitterPanelLoaded, getTwitterPanel, getTwitterFeed, sendLogToBackground}

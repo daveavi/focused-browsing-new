@@ -1,9 +1,9 @@
-const TwitterUtils = require("./TwitterUtils.js")
-
+import TwitterUtils from './TwitterUtils'
 export default class TwitterStrategy {
 
 
-  constructor() {
+  constructor(port) {
+    this.port = port
     this.PANEL_ELEMENTS = []
     this.TWITTER_FEED_CHILD_NODE = null
 
@@ -21,6 +21,7 @@ export default class TwitterStrategy {
     this.feedIframe = iframes[0]
     this.panelIframe = iframes[1]
 
+    this.twitterBlockingAttempts = 0
   }
 
 
@@ -41,7 +42,6 @@ export default class TwitterStrategy {
       position: "fixed",
       border: "none",
     });
-
 
 
     Object.assign(panelIframe.style, {
@@ -91,17 +91,13 @@ export default class TwitterStrategy {
 
 
   toggleTwitterHomeDistractions(shouldHide) {
-    try {
-      if (shouldHide) {
-        this.hideTwitterFeed(true)
-        this.hideTwitterPanel(true)
-        this.injectCards("home")
-      } else {
-        this.hideTwitterFeed(false)
-        this.hideTwitterPanel(false)
-      }
-    } catch (err) {
-
+    if (shouldHide) {
+      this.hideTwitterFeed(true)
+      this.hideTwitterPanel(true)
+      this.injectCards("home")
+    } else {
+      this.hideTwitterFeed(false)
+      this.hideTwitterPanel(false)
     }
   }
 
@@ -147,46 +143,56 @@ export default class TwitterStrategy {
 
 
   tryBlockingTwitterHome() {
-    if (this.distractionsHidden("home")) {
-      clearInterval(this.feedIntervalId);
-      this.initialLoad = false;
-      return
-    } else {
-      try {
-        if (TwitterUtils.homePageTwitterHasLoaded()) {
-          this.toggleTwitterHomeDistractions(true);
-        }
-      } catch (err) {
-
+    try {
+      if (this.distractionsHidden("home")) {
+        clearInterval(this.feedIntervalId);
+        this.initialLoad = false;
+        return
+      } else {
+        this.toggleTwitterHomeDistractions(true);
       }
+    } catch (err) {
+
+      this.blockAttemptCount += 1
+      if (this.blockAttemptCount > 2) {
+        TwitterUtils.sendLogToBackground(this.port, "WARNING: Twitter elements usually load by now")
+      } else if (this.blockAttemptCount > 4 && this.blockAttemptCount < 8) {
+        TwitterUtils.sendLogToBackground(this.port, "ERROR: Something Wrong with the twitter elements")
+      } else {
+        clearInterval(this.pageInterval);
+      }
+
     }
   }
 
   tryBlockingTwitterPanel() {
-    if (this.distractionsHidden("panel")) {
-      clearInterval(this.pageInterval);
-      return
-    } else {
-      try {
-        if (TwitterUtils.hasTwitterPanelLoaded()) {
-          this.hideTwitterPanel(true);
-        }
-      } catch (err) {
+    try {
+      if (this.distractionsHidden("panel")) {
+        clearInterval(this.pageInterval);
+        return
+      } else {
+        this.hideTwitterPanel(true);
+      }
+    } catch (err) {
+      this.blockAttemptCount += 1
+      if (this.blockAttemptCount > 2) {
+        TwitterUtils.sendLogToBackground(this.port, "WARNING: Twitter elements usually load by now")
+      } else if (this.blockAttemptCount > 4 && this.blockAttemptCount < 8) {
+        TwitterUtils.sendLogToBackground(this.port, "ERROR: Something Wrong with the twitter elements")
+      } else {
+        clearInterval(this.pageInterval);
       }
     }
   }
 
 
   distractionsHidden(isHomePage) {
-    try {
-      let PANEL = TwitterUtils.getTwitterPanel()
-      if (isHomePage == "home") {
-        let FEED = TwitterUtils.getTwitterFeed()
-        return FEED.children[0].nodeName == "IFRAME" && PANEL.children.length == 2;
-      } else {
-        return PANEL.children.length == 2;
-      }
-    } catch (err) {
+    let PANEL = TwitterUtils.getTwitterPanel()
+    if (isHomePage == "home") {
+      let FEED = TwitterUtils.getTwitterFeed()
+      return FEED.children[0].nodeName == "IFRAME" && PANEL.children.length == 2;
+    } else {
+      return PANEL.children.length == 2;
     }
   }
 

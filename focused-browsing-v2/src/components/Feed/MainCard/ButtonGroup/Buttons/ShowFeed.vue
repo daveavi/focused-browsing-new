@@ -18,9 +18,7 @@ export default {
   }, 
   methods: {
     showFeed(){
-      chrome.runtime.sendMessage({status: "focus"}, function(response) {
-          console.log(response.farewell);
-      });
+      chrome.runtime.sendMessage({intent: "unfocus"});
     }
   }
 };

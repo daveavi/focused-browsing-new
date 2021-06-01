@@ -1,12 +1,14 @@
 var focusMode = { "twitter": { "focus": true } };
 
 var activeURL;
-var ports = []
+var ports = {}
 
 chrome.runtime.onConnect.addListener(function (connectionPort) {
   console.assert(connectionPort.name == "Focused Browsing");
   let tab_info = connectionPort.sender.tab
   ports[tab_info.id] = connectionPort
+  ports[tab_info.id].onMessage.addListener(onLogRecieved)
+
 });
 
 function tabListener(tabId, changeInfo, tab) {
@@ -42,12 +44,16 @@ function toggleFromVue(request, sender, sendResponse) {
   activeURL = sender.tab.url
 
   let webPage = activeURL.includes("twitter.com") ? "twitter" : ""
-  if (request.status == "focus") {
+  if (request.intent == "unfocus") {
     toggleFocus(webPage, "toggle")
   }
-  sendResponse({ enabled: "focus" })
-  return true
+}
 
+function onLogRecieved(msg){
+  if(msg.event == "log"){
+    let log = msg.log
+    console.log(log)
+  }
 }
 
 function sendStatus(webPage, status, method) {
