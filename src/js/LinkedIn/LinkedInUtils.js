@@ -8,7 +8,17 @@ function getLinkedInFeed(){
 function getLinkedInPanel(){
     return document.getElementsByClassName(PANEL_CLASS)[0]
 }
+
+function isFeedHidden(){
+    let feed = getLinkedInFeed()
+    return feed.children.length == 1
+}
+
+function isPanelHidden(){
+    let panel = getLinkedInPanel()
+    return panel.children.length == 0;
+}
   
 
 
-module.exports = {getLinkedInFeed, getLinkedInPanel}
+module.exports = {getLinkedInFeed, getLinkedInPanel, isFeedHidden, isPanelHidden}

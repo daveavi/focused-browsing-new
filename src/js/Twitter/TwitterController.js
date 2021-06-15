@@ -1,5 +1,5 @@
 import TwitterUtils from './TwitterUtils'
-0
+import utils from '../utils'
 export default class TwitterController {
 
 
@@ -143,7 +143,7 @@ export default class TwitterController {
 
   tryHidingTwitterFeed() {
     try {
-      if (this.isFeedHidden()) {
+      if (TwitterUtils.isFeedHidden()) {
         clearInterval(this.feedIntervalId);
         this.initialLoad = false;
         return
@@ -168,7 +168,7 @@ export default class TwitterController {
 
   tryHidingTwitterPanel() {
     try {
-      if (this.isPanelHidden()) {
+      if (TwitterUtils.isPanelHidden()) {
         clearInterval(this.pageInterval);
         return
       } else {
@@ -188,16 +188,6 @@ export default class TwitterController {
         clearInterval(this.pageInterval);
       }
     }
-  }
-
-  isFeedHidden() {
-    let feed = TwitterUtils.getTwitterFeed()
-    return feed.children[0].nodeName == "IFRAME"
-  }
-
-  isPanelHidden() {
-    let panel = TwitterUtils.getTwitterPanel()
-    return panel.children.length == 2;
   }
 
 }

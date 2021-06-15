@@ -36,7 +36,7 @@ export default class LinkedInController {
     focus(url){
         if(url.includes("/feed")){
             this.focusFeed()
-            this.focusPanel()
+            // this.focusPanel()
         }
     }
 
@@ -46,67 +46,19 @@ export default class LinkedInController {
     }
 
     focusFeed(){
-        this.feedIntervalId = setInterval(this.tryBlockingLinkedInFeed, 500)
+        this.feedIntervalId = setInterval(this.tryBlockingLinkedInFeed.bind(this), 500)
     }
 
     focusPanel(){
-        this.panelIntervalId = setInterval(this.tryBlockingLinkedInPanel, 500)
+        this.panelIntervalId = setInterval(this.tryBlockingLinkedInPanel.bind(this), 500)
     }
-
-
-    tryBlockingLinkedInFeed(){
-        try{
-            if(this.isFeedHidden()){
-                clearInterval(this.feedIntervalId);
-                return 
-            }else{
-                this.toggleLinkedInFeed(true)
-    
-            }
-        }catch(err){
-            this.blockFeedAttemptCount += 1
-            if (this.blockFeedAttemptCount > 2) {
-                utils.sendLogToBackground(this.port, "WARNING: Twitter elements usually load by now")
-            } else if (this.blockFeedAttemptCount > 4 && this.blockFeedAttemptCount < 8) {
-                utils.sendLogToBackground(this.port, "ERROR: Something Wrong with the twitter elements")
-            } else if (this.blockFeedAttemptCount > 8){
-                clearInterval(this.feedIntervalId);
-            }
-        }
-    }
-
-
-    tryBlockingLinkedInPanel(){
-        try{
-            if(this.isPanelHidden()){
-                clearInterval(this.panelIntervalId);
-                return 
-            }else{
-                this.toggleLinkedInPanel(true)
-            }
-        }catch(err){
-            this.blockPanelAttemptCount += 1
-            if (this.blockPanelAttemptCount > 2) {
-                utils.sendLogToBackground(this.port, "WARNING: Twitter elements usually load by now")
-            } else if (this.blockPanelAttemptCount > 4 && this.blockPanelAttemptCount < 8) {
-                utils.sendLogToBackground(this.port, "ERROR: Something Wrong with the twitter elements")
-            } else if (this.blockPanelAttemptCount > 8){
-                clearInterval(this.feedIntervalId);
-            }
-        }
-    }
-
-
-
-
-
 
     toggleLinkedInFeed(shouldHide){
         var linkedin_feed_parent_node = LinkedInUtils.getLinkedInFeed()
         if(shouldHide){
             this.linkedin_feed_child_node = linkedin_feed_parent_node.children[1]
             console.log(this.linkedin_feed_child_node)
-            this.linkedin_feed_parent_node.removeChild(this.linkedin_feed_child_node)
+            linkedin_feed_parent_node.removeChild(this.linkedin_feed_child_node)
             console.log(linkedin_feed_parent_node)
         }else{
             linkedin_feed_parent_node.append(this.linkedin_feed_child_node)
@@ -133,6 +85,51 @@ export default class LinkedInController {
         }
     }
 
-   
+
+    tryBlockingLinkedInFeed(){
+        try{
+            console.log("I am trying to block the feed")
+            if(LinkedInUtils.isFeedHidden()){
+                console.log("feed is hidden")
+                clearInterval(this.feedIntervalId);
+                return 
+            }else{
+                console.log("blocking feed")
+                this.toggleLinkedInFeed(true)
+            }
+        }catch(err){
+            // console.log(err)
+            this.blockFeedAttemptCount += 1
+            if (this.blockFeedAttemptCount > 2) {
+                utils.sendLogToBackground(this.port, "WARNING: Twitter elements usually load by now")
+            } else if (this.blockFeedAttemptCount > 4 && this.blockFeedAttemptCount < 8) {
+                utils.sendLogToBackground(this.port, "ERROR: Something Wrong with the twitter elements")
+            } else if (this.blockFeedAttemptCount > 8){
+                clearInterval(this.feedIntervalId);
+            }
+        }
+    }
+
+
+    tryBlockingLinkedInPanel(){
+        try{
+            if(LinkedInUtils.isPanelHidden()){
+                clearInterval(this.panelIntervalId);
+                return 
+            }else{
+                this.toggleLinkedInPanel(true)
+            }
+        }catch(err){
+            this.blockPanelAttemptCount += 1
+            if (this.blockPanelAttemptCount > 2) {
+                utils.sendLogToBackground(this.port, "WARNING: Twitter elements usually load by now")
+            } else if (this.blockPanelAttemptCount > 4 && this.blockPanelAttemptCount < 8) {
+                utils.sendLogToBackground(this.port, "ERROR: Something Wrong with the twitter elements")
+            } else if (this.blockPanelAttemptCount > 8){
+                clearInterval(this.panelIntervalId);
+            }
+        }
+    }
+
 
 }
