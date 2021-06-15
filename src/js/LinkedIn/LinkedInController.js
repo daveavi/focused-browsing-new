@@ -6,8 +6,10 @@ export default class LinkedInController {
         this.port = port
         this.panel_elements= [] 
         this.linkedin_feed_child_node = null
+        this.linkedin_ad_child_node = null
         this.feedIntervalId = 0
         this.panelInterval = 0
+        this.adIntervalId = 0 
         this.initialLoad = false
         this.blockFeedAttemptCount = 0
         this.blockPanelAttemptCount = 0
@@ -35,13 +37,15 @@ export default class LinkedInController {
     focus(url){
         if(url.includes("/feed")){
             this.focusFeed()
-            // this.focusPanel()
+            this.focusPanel()
+            this.focusAd()
         }
     }
 
     unfocus(url){
         this.toggleLinkedInFeed(false)
         this.toggleLinkedInPanel(false)
+        this.toggleLinkedInAd(false)
     }
 
     focusFeed(){
@@ -51,6 +55,23 @@ export default class LinkedInController {
     focusPanel(){
         this.panelIntervalId = setInterval(this.tryBlockingLinkedInPanel.bind(this), 500)
     }
+
+    focusAd(){
+        this.adIntervalId = setInterval(this.tryBlockingLinkedInAd.bind(this), 500)
+    }
+
+
+    toggleLinkedInAd(shouldHide){
+        var linkedin_ad_parent_node = LinkedInUtils.getAdHeader()
+        console.log(linkedin_ad_parent_node)
+        if(shouldHide){
+            this.linkedin_ad_child_node = linkedin_ad_parent_node.children[0]
+            linkedin_ad_parent_node.removeChild(this.linkedin_ad_child_node)
+        }else{
+            linkedin_ad_parent_node.append(this.linkedin_ad_child_node)
+        }
+    }
+
 
     toggleLinkedInFeed(shouldHide){
         var linkedin_feed_parent_node = LinkedInUtils.getLinkedInFeed()
@@ -84,6 +105,25 @@ export default class LinkedInController {
         }
     }
 
+    tryBlockingLinkedInAd(){
+        try{
+            if(LinkedInUtils.isAdHidden()){
+                clearInterval(this.adIntervalId);
+                return 
+            }else{
+                this.toggleLinkedInAd(true)
+            }
+        }catch(err){
+            this.blockAdAttemptCount += 1
+            if (this.blockAdAttemptCount > 2 && this.blockAdAttemptCount <= 4) {
+                utils.sendLogToBackground(this.port, "WARNING: LinkedIn elements usually load by now")
+            } else if (this.blockAdAttemptCount > 4 && this.blockAdAttemptCount < 8) {
+                utils.sendLogToBackground(this.port, "ERROR: Something Wrong with the LinkedIn elements")
+            } else if (this.blockAdAttemptCount > 8){
+                clearInterval(this.adIntervalId);
+            }
+        }
+    }
 
     tryBlockingLinkedInFeed(){
         try{
@@ -96,9 +136,9 @@ export default class LinkedInController {
         }catch(err){
             this.blockFeedAttemptCount += 1
             if (this.blockFeedAttemptCount > 2 && this.blockFeedAttemptCount <= 4) {
-                utils.sendLogToBackground(this.port, "WARNING: Twitter elements usually load by now")
+                utils.sendLogToBackground(this.port, "WARNING: LinkedIn elements usually load by now")
             } else if (this.blockFeedAttemptCount > 4 && this.blockFeedAttemptCount < 8) {
-                utils.sendLogToBackground(this.port, "ERROR: Something Wrong with the twitter elements")
+                utils.sendLogToBackground(this.port, "ERROR: Something Wrong with the LinkedIn elements")
             } else if (this.blockFeedAttemptCount > 8){
                 clearInterval(this.feedIntervalId);
             }
@@ -117,9 +157,9 @@ export default class LinkedInController {
         }catch(err){
             this.blockPanelAttemptCount += 1
             if (this.blockPanelAttemptCount > 2  && this.blockPanelAttemptCount <= 4) {
-                utils.sendLogToBackground(this.port, "WARNING: Twitter elements usually load by now")
+                utils.sendLogToBackground(this.port, "WARNING: LinkedIn elements usually load by now")
             } else if (this.blockPanelAttemptCount > 4 && this.blockPanelAttemptCount < 8) {
-                utils.sendLogToBackground(this.port, "ERROR: Something Wrong with the twitter elements")
+                utils.sendLogToBackground(this.port, "ERROR: Something Wrong with the LinkedIn elements")
             } else if (this.blockPanelAttemptCount > 8){
                 clearInterval(this.panelIntervalId);
             }
