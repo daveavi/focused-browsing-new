@@ -9,7 +9,6 @@ export default class LinkedInController {
         this.feedIntervalId = 0
         this.panelInterval = 0
         this.initialLoad = false
-        this.port = null
         this.blockFeedAttemptCount = 0
         this.blockPanelAttemptCount = 0
     }
@@ -88,19 +87,15 @@ export default class LinkedInController {
 
     tryBlockingLinkedInFeed(){
         try{
-            console.log("I am trying to block the feed")
             if(LinkedInUtils.isFeedHidden()){
-                console.log("feed is hidden")
                 clearInterval(this.feedIntervalId);
                 return 
             }else{
-                console.log("blocking feed")
                 this.toggleLinkedInFeed(true)
             }
         }catch(err){
-            // console.log(err)
             this.blockFeedAttemptCount += 1
-            if (this.blockFeedAttemptCount > 2) {
+            if (this.blockFeedAttemptCount > 2 && this.blockFeedAttemptCount <= 4) {
                 utils.sendLogToBackground(this.port, "WARNING: Twitter elements usually load by now")
             } else if (this.blockFeedAttemptCount > 4 && this.blockFeedAttemptCount < 8) {
                 utils.sendLogToBackground(this.port, "ERROR: Something Wrong with the twitter elements")
@@ -121,7 +116,7 @@ export default class LinkedInController {
             }
         }catch(err){
             this.blockPanelAttemptCount += 1
-            if (this.blockPanelAttemptCount > 2) {
+            if (this.blockPanelAttemptCount > 2  && this.blockPanelAttemptCount <= 4) {
                 utils.sendLogToBackground(this.port, "WARNING: Twitter elements usually load by now")
             } else if (this.blockPanelAttemptCount > 4 && this.blockPanelAttemptCount < 8) {
                 utils.sendLogToBackground(this.port, "ERROR: Something Wrong with the twitter elements")
