@@ -50,8 +50,9 @@ function toggleFocusListener(command, tab) {
     if (isURLTwitterHome(activeURL) & !activeURL.includes("/i/display")) {
       toggleFocus("twitter")
     }
-  }else if(activeURL.includes("linked.com")){
+  }else if(activeURL.includes("linkedin.com")){
     if (isURLLinkedInHome(activeURL)) {
+      console.log("toggling focus on linkedin")
       toggleFocus("linkedin")
     }
   }
