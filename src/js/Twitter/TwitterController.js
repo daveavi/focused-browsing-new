@@ -1,13 +1,12 @@
 import TwitterUtils from './TwitterUtils'
-import utils from '../utils'
+0
 export default class TwitterController {
 
 
   constructor(port) {
-    this.port = port
     this.panel_elements = []
     this.twitterFeedChildNode = null
-
+    this.port = port
     this.feedIntervalId = 0
     this.pageInterval = 0
     this.initialLoad = false
@@ -23,6 +22,10 @@ export default class TwitterController {
     this.panelIframe = iframes[1]
 
     this.blockAttemptCount = 0
+  }
+
+  setPort(port){
+    this.port = port
   }
 
   handleActionOnPage(url, action) {
