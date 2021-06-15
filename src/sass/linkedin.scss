@@ -1,0 +1,165 @@
+
+
+
+
+.focus-container-linked-in {
+    background-color: $white;
+    border-radius: 16px 16px 0px 0px;
+    padding: 114px 58.5px 138.29px 58px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .card-main {
+    width: calc(99.88% - 84px);
+    height: calc(67.79% - 102px);
+    background-color: $white;
+    margin-bottom: 30.71px;
+    margin-left: 0.5px;
+    overflow: hidden;
+    border-radius: 16px;
+    padding: 51px 42px;
+    box-shadow: 0 4px 12px 0 $transparent-black-2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .card-content {
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .card-title {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .card-heading {
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+  }
+  .card-icon {
+    margin-right: 7px;
+    padding: 1.54px 1px 1.53px;
+    display: flex;
+    align-items: center;
+  }
+  .vector {
+    flex: 1;
+    align-self: stretch;
+    object-fit: cover;
+  }
+  .heading {
+    color: $primary-1;
+    letter-spacing: -0.27px;
+    @include inter-18-medium;
+  }
+  .card-subtitle {
+    height: 60px;
+    width: 348px;
+    color: $gray;
+    display: flex;
+    text-align: center;
+    letter-spacing: -0.21px;
+    @include inter-14-regular;
+  }
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .card-button-primary {
+    background-color: $medium-slate-blue;
+    margin-bottom: 16px;
+    overflow: hidden;
+    border-radius: 8px;
+    padding: 14px 87px 13px;
+    display: flex;
+    align-items: center;
+    height: 21px;
+    width: 132px;
+  }
+  .support-this-project {
+    color: $white-2;
+    letter-spacing: -0.21px;
+    @include inter-14-semi-bold;
+  }
+  .card-button-secondary {
+    overflow: hidden;
+    border-radius: 8px;
+    padding: 13px 116px 12px 115px;
+    display: flex;
+    align-items: center;
+    height: 21px;
+    width: 73px;
+    border: 1px solid $black;
+  }
+  .show-feed {
+    color: $black;
+    letter-spacing: -0.21px;
+    @include inter-14-semi-bold;
+  }
+  .keyboard-shortcut {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .caption {
+    color: $gray;
+    @include inter-12-bold;
+  }
+  .caption-emphasis-0 {
+    color: $gray;
+    letter-spacing: -0.18px;
+    @include inter-12-semi-bold-line18;
+  }
+  .caption-emphasis-1 {
+    color: $gray;
+    letter-spacing: -0.18px;
+    @include inter-12-medium;
+  }
+  .quote-container {
+    margin-bottom: 66px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .quote {
+    height: 38px;
+    width: 432px;
+    color: $gray;
+    display: flex;
+    text-align: center;
+    margin-bottom: 14px;
+    letter-spacing: -0.21px;
+    @include inter-14-regular;
+  }
+  .quoter {
+    color: $black;
+    letter-spacing: -0.21px;
+    @include inter-14-medium;
+  }
+  .card-text-links {
+    margin-left: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .about-grey-software {
+    color: $gray;
+    text-align: center;
+    text-decoration: underline;
+    letter-spacing: -0.18px;
+    @include inter-12-semi-bold-line18;
+    &:not(:last-of-type) {
+      margin-right: 48px;
+    }
+  }
