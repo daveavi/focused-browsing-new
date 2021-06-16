@@ -21,7 +21,8 @@ export default class TwitterController {
     this.feedIframe = iframes[0]
     this.panelIframe = iframes[1]
 
-    this.blockAttemptCount = 0
+    this.blockFeedAttemptCount = 0
+    this.blockPanelAttemptCount = 0
   }
 
   setPort(port){
@@ -155,12 +156,12 @@ export default class TwitterController {
         feed.append(this.feedIframe)
       }
     } catch (err) {
-      this.blockAttemptCount += 1
-      if (this.blockAttemptCount > 2) {
+      this.blockFeedAttemptCount += 1
+      if (this.blockFeedAttemptCount > 2 && this.blockFeedAttemptCount <= 4) {
         utils.sendLogToBackground(this.port, "WARNING: Twitter elements usually load by now")
-      } else if (this.blockAttemptCount > 4 && this.blockAttemptCount < 8) {
+      } else if (this.blockFeedAttemptCount > 4 && this.blockFeedAttemptCount <= 8) {
         utils.sendLogToBackground(this.port, "ERROR: Something Wrong with the twitter elements")
-      } else if (this.blockAttemptCount > 8){
+      } else if (this.blockFeedAttemptCount > 8){
         clearInterval(this.feedIntervalId);
       }
     }
@@ -179,12 +180,12 @@ export default class TwitterController {
         panel.append(this.panelIframe)
       }
     } catch (err) {
-      this.blockAttemptCount += 1
-      if (this.blockAttemptCount > 2) {
+      this.blockPanelAttemptCount += 1
+      if (this.blockPanelAttemptCount > 2) {
         utils.sendLogToBackground(this.port, "WARNING: Twitter elements usually load by now")
-      } else if (this.blockAttemptCount > 4 && this.blockAttemptCount < 8) {
+      } else if (this.blockPanelAttemptCount > 4 && this.blockPanelAttemptCount < 8) {
         utils.sendLogToBackground(this.port, "ERROR: Something Wrong with the twitter elements")
-      } else if (this.blockAttemptCount > 8) {
+      } else if (this.blockPanelAttemptCount > 8) {
         clearInterval(this.pageInterval);
       }
     }

@@ -13,6 +13,14 @@ export default class LinkedInController {
         this.initialLoad = false
         this.blockFeedAttemptCount = 0
         this.blockPanelAttemptCount = 0
+
+        this.LINKEDIN_FEED_FRAME_HEIGHT = "1000px";
+        this.LINKEDIN_FEED_FRAME_WIDTH = "549px";
+
+        this.IFRAME_ClASS = "focus-card";
+
+        this.feedIframe = this.createLinkedInIframe()
+
     }
 
     setPort(port){
@@ -20,11 +28,12 @@ export default class LinkedInController {
     }
 
     setPanelElements(panel_elements){
-        this.pane;_elements= panel_elements
+        this.panel_elements= panel_elements
     }
 
 
     handleActionOnPage(url, action){
+        console.log(action)
         if(action == "focus"){
             this.focus(url)
         }else{
@@ -43,6 +52,7 @@ export default class LinkedInController {
     }
 
     unfocus(url){
+        utils.removeFocusedBrowsingCards()
         this.toggleLinkedInFeed(false)
         this.toggleLinkedInPanel(false)
         this.toggleLinkedInAd(false)
@@ -131,9 +141,14 @@ export default class LinkedInController {
                 clearInterval(this.feedIntervalId);
                 return 
             }else{
+                console.log(this.blockFeedAttemptCount)
                 this.toggleLinkedInFeed(true)
+                this.setIframeSource()
+                let feed = LinkedInUtils.getLinkedInFeed()
+                feed.append(this.feedIframe)
             }
         }catch(err){
+            console.log(err)
             this.blockFeedAttemptCount += 1
             if (this.blockFeedAttemptCount > 2 && this.blockFeedAttemptCount <= 4) {
                 utils.sendLogToBackground(this.port, "WARNING: LinkedIn elements usually load by now")
@@ -166,5 +181,24 @@ export default class LinkedInController {
         }
     }
 
+    createLinkedInIframe(){
+        let feedIframe = document.createElement("iframe")
+
+        feedIframe.width = this.LINKEDIN_FEED_FRAME_WIDTH;
+        feedIframe.height = this.LINKEDIN_FEED_FRAME_HEIGHT;
+        feedIframe.className = this.IFRAME_ClASS;
+
+        Object.assign(feedIframe.style, {
+        position: "inherit",
+        border: "none",
+        });
+
+        return feedIframe
+    }
+
+    setIframeSource(){
+        this.feedIframe.src = chrome.runtime.getURL("www/linkedin/feed/linkedInFeed.html")
+    }
+    
 
 }

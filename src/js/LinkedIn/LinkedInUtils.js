@@ -17,7 +17,7 @@ function getAdHeader(){
 
 function isFeedHidden(){
     let feed = getLinkedInFeed()
-    return feed.children.length == 1
+    return feed.children[1].nodeName == "IFRAME"
 }
 
 function isPanelHidden(){
